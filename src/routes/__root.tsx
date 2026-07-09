@@ -77,14 +77,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "SEMILLA — Inteligencia territorial para riesgo agroclimático" },
+      {
+        name: "description",
+        content:
+          "SEMILLA integra datos abiertos, imágenes satelitales e IA para priorizar municipios rurales de Colombia frente al riesgo agroclimático y alimentario.",
+      },
+      { name: "author", content: "Equipo SEMILLA" },
+      { property: "og:title", content: "SEMILLA — Inteligencia territorial rural" },
+      {
+        property: "og:description",
+        content:
+          "Del dato climático a la decisión territorial: priorización municipal basada en evidencia.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
