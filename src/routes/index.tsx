@@ -932,7 +932,7 @@ function ClustersSection() {
           </div>
           <svg viewBox="0 0 200 220" className="w-full h-[300px]">
             {(() => {
-              const lines: JSX.Element[] = [];
+              const lines: React.ReactElement[] = [];
               const leaves = 10;
               const step = 180 / leaves;
               for (let i = 0; i < leaves; i++) {
