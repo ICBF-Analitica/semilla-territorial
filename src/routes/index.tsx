@@ -16,7 +16,6 @@ import {
   ShieldCheck,
   Target,
   Sparkles,
-  Upload,
   Download,
   Github,
   Mail,
@@ -24,6 +23,10 @@ import {
   AlertTriangle,
   Activity,
   Network,
+  ExternalLink,
+  Wheat,
+  Thermometer,
+  Droplets,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -32,20 +35,23 @@ import {
   PolarAngleAxis,
   PolarRadiusAxis,
   Radar,
-  ScatterChart,
-  Scatter,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
-  ZAxis,
   BarChart,
   Bar,
-  Legend,
 } from "recharts";
-import { demoMunicipios, clusters, fuentes, type Municipio } from "@/data/demoData";
+import { municipios, departamentos, perfilRiesgo, type Municipio } from "@/data/municipios";
+import { fuentes } from "@/data/demoData";
+import heroImg from "@/images/Imagen_inicial.png";
+import mapaImg from "@/images/Mapa.png";
+import perceptualImg from "@/images/mapa_perceptual.png";
+import dendroImg from "@/images/Dendrograma.png";
 
 export const Route = createFileRoute("/")({ component: Index });
+
+const DASHBOARD_URL = "https://urchin-nimbly-senate.ngrok-free.dev/";
 
 const NAV = [
   ["inicio", "Inicio"],
@@ -57,19 +63,29 @@ const NAV = [
   ["clusters", "Clusters"],
   ["ia", "IA"],
   ["impacto", "Impacto"],
-  ["demo", "Demo"],
+  ["demo", "Consulta"],
   ["contacto", "Contacto"],
 ] as const;
 
-function riskColor(kpi: number) {
-  if (kpi >= 65) return "var(--chart-4)";
-  if (kpi >= 45) return "var(--chart-3)";
-  return "var(--chart-1)";
+function quintileColor(q: string) {
+  switch (q) {
+    case "Muy Alto":
+      return "var(--chart-4)";
+    case "Alto":
+      return "var(--chart-3)";
+    case "Medio":
+      return "var(--chart-5)";
+    case "Bajo":
+      return "var(--chart-1)";
+    case "Muy Bajo":
+      return "var(--primary)";
+    default:
+      return "var(--chart-2)";
+  }
 }
-function riskLabel(kpi: number) {
-  if (kpi >= 65) return "Alto";
-  if (kpi >= 45) return "Medio";
-  return "Bajo";
+
+function pct(v: number, digits = 1) {
+  return `${(v * 100).toFixed(digits)}%`;
 }
 
 function Index() {
@@ -86,7 +102,7 @@ function Index() {
       <IASection />
       <Impacto />
       <CasosDeUso />
-      <Demo />
+      <ConsultaSection />
       <Cierre />
       <Footer />
     </div>
@@ -125,11 +141,13 @@ function Navbar() {
           ))}
         </nav>
         <a
-          href="#demo"
+          href={DASHBOARD_URL}
+          target="_blank"
+          rel="noreferrer"
           className="hidden lg:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-md text-primary-foreground shadow-sm"
           style={{ background: "var(--gradient-primary)" }}
         >
-          Ver demo <ArrowRight className="w-4 h-4" />
+          Tablero <ExternalLink className="w-4 h-4" />
         </a>
         <button
           onClick={() => setOpen((v) => !v)}
@@ -215,31 +233,11 @@ function Hero() {
               <stop offset="100%" stopColor="#fff" stopOpacity="0" />
             </radialGradient>
           </defs>
-          {Array.from({ length: 40 }).map((_, i) => {
-            const x = (i * 97) % 800;
-            const y = (i * 53) % 600;
-            return (
-              <g key={i}>
-                <circle cx={x} cy={y} r={2} fill="#fff" opacity={0.6} />
-                {i < 30 && (
-                  <line
-                    x1={x}
-                    y1={y}
-                    x2={(x + 120) % 800}
-                    y2={(y + 90) % 600}
-                    stroke="#fff"
-                    strokeOpacity="0.15"
-                    strokeWidth="1"
-                  />
-                )}
-              </g>
-            );
-          })}
-          <circle cx="400" cy="300" r="180" fill="url(#g1)" />
+          <circle cx="400" cy="300" r="220" fill="url(#g1)" />
         </svg>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-[1.2fr_1fr] gap-12 items-center">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-[1.15fr_1fr] gap-12 items-center">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/20 text-xs font-semibold uppercase tracking-widest">
             <Sparkles className="w-3.5 h-3.5" /> Datos abiertos · Colombia
@@ -252,8 +250,8 @@ function Hero() {
           </p>
           <p className="mt-6 text-base sm:text-lg text-white/75 max-w-2xl">
             Una solución basada en datos abiertos, imágenes satelitales e inteligencia artificial
-            para priorizar municipios rurales, anticipar riesgos climáticos y fortalecer la
-            seguridad alimentaria.
+            para priorizar los 1.122 municipios de Colombia, anticipar riesgos climáticos y
+            fortalecer la seguridad alimentaria.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-2">
@@ -287,65 +285,20 @@ function Hero() {
           </div>
         </div>
 
-        <ColombiaGraphic />
+        <div className="relative">
+          <div
+            className="absolute -inset-6 rounded-[2rem] blur-3xl opacity-40"
+            style={{ background: "var(--chart-1)" }}
+          />
+          <img
+            src={heroImg}
+            alt="Ilustración SEMILLA — inteligencia territorial rural"
+            className="relative w-full max-w-lg mx-auto rounded-3xl shadow-2xl border border-white/20 object-cover"
+            loading="eager"
+          />
+        </div>
       </div>
     </section>
-  );
-}
-
-function ColombiaGraphic() {
-  const pts = [
-    [55, 15], [48, 25], [40, 35], [58, 40], [45, 50],
-    [62, 30], [50, 60], [65, 55], [42, 68], [55, 75],
-    [70, 42], [38, 45], [60, 20], [52, 82], [48, 90],
-  ];
-  return (
-    <div className="relative aspect-square max-w-md mx-auto w-full">
-      <div
-        className="absolute inset-0 rounded-full blur-3xl opacity-40"
-        style={{ background: "var(--chart-1)" }}
-      />
-      <svg viewBox="0 0 100 100" className="relative w-full h-full">
-        <path
-          d="M55 8 L48 18 L38 22 L32 32 L28 44 L34 52 L30 62 L38 72 L44 82 L52 92 L60 88 L68 78 L72 66 L76 54 L74 42 L68 32 L62 22 L55 8 Z"
-          fill="rgba(255,255,255,0.08)"
-          stroke="rgba(255,255,255,0.6)"
-          strokeWidth="0.5"
-        />
-        {pts.map(([x, y], i) => {
-          const risk = (i * 37) % 3;
-          const color = risk === 0 ? "#f59e0b" : risk === 1 ? "#22c55e" : "#38bdf8";
-          return (
-            <g key={i}>
-              <circle cx={x} cy={y} r="2.5" fill={color}>
-                <animate
-                  attributeName="r"
-                  values="2;3.5;2"
-                  dur={`${2 + (i % 3)}s`}
-                  repeatCount="indefinite"
-                />
-              </circle>
-              <circle cx={x} cy={y} r="5" fill={color} opacity="0.2" />
-            </g>
-          );
-        })}
-        {pts.slice(0, 10).map(([x1, y1], i) => {
-          const [x2, y2] = pts[(i + 3) % pts.length];
-          return (
-            <line
-              key={i}
-              x1={x1}
-              y1={y1}
-              x2={x2}
-              y2={y2}
-              stroke="rgba(255,255,255,0.25)"
-              strokeWidth="0.3"
-              strokeDasharray="1 1"
-            />
-          );
-        })}
-      </svg>
-    </div>
   );
 }
 
@@ -414,6 +367,52 @@ function DatosAbiertos() {
     { icon: Satellite, name: "Vegetación satelital (NDVI)", src: "Sentinel-2 · GEE" },
     { icon: RouteIcon, name: "Vías y accesibilidad", src: "OpenStreetMap" },
   ];
+
+  const variables = [
+    {
+      emoji: "🌿",
+      icon: Leaf,
+      short: "Indicador de resiliencia ecológica",
+      title: "Cobertura vegetal (NDVI)",
+      body: "El NDVI permite aproximar el estado de la cobertura vegetal y el vigor de los ecosistemas productivos. Una baja cobertura puede reflejar mayor vulnerabilidad a erosión, pérdida de productividad del suelo, inundaciones, sequías y deslizamientos, afectando la producción agropecuaria y agravando el riesgo de crisis alimentarias tras eventos climáticos extremos.",
+    },
+    {
+      emoji: "🛣️",
+      icon: RouteIcon,
+      short: "Indicador de conectividad y acceso",
+      title: "Suficiencia vial",
+      body: "La suficiencia vial representa la capacidad de un territorio para acceder a mercados, servicios de salud, programas sociales y cadenas de abastecimiento. En emergencias, una baja suficiencia dificulta la llegada de ayuda humanitaria, atención nutricional y alimentos, elevando el riesgo de deterioro nutricional en poblaciones vulnerables.",
+    },
+    {
+      emoji: "🍽️",
+      icon: HeartPulse,
+      short: "Predictor directo del riesgo nutricional",
+      title: "Inseguridad alimentaria",
+      body: "Los municipios con altos niveles de inseguridad alimentaria moderada o grave tienen hogares con menor capacidad para enfrentar choques climáticos, especialmente cuando existen barreras en el acceso físico y económico a alimentos suficientes, variados y nutritivos.",
+    },
+    {
+      emoji: "👨‍🌾",
+      icon: Users,
+      short: "Factor de exposición y brecha estructural",
+      title: "Población rural",
+      body: "Las poblaciones rurales dependen en mayor medida de actividades agropecuarias sensibles al clima y suelen enfrentar mayores barreras de acceso a infraestructura, salud y protección social. Una alta proporción de ruralidad puede amplificar el impacto de eventos climáticos sobre la seguridad alimentaria local.",
+    },
+    {
+      emoji: "🌾",
+      icon: Wheat,
+      short: "Indicador de capacidad de abastecimiento",
+      title: "Diversidad productiva agrícola",
+      body: "Una menor diversidad de cultivos o la concentración en pocos grupos alimentarios aumenta la vulnerabilidad ante pérdidas por fenómenos climáticos. Esta dimensión permite observar la capacidad territorial de sostener sistemas agroalimentarios más diversos y resilientes.",
+    },
+    {
+      emoji: "🌡️",
+      icon: Thermometer,
+      short: "Variable climática crítica",
+      title: "Temperatura",
+      body: "La temperatura influye directamente en la productividad agrícola, la disponibilidad hídrica y la ocurrencia de eventos extremos. Aumentos sostenidos pueden reducir rendimientos, afectar cultivos estratégicos y generar estrés hídrico que impacta los medios de vida rurales.",
+    },
+  ];
+
   return (
     <Section
       id="datos"
@@ -470,6 +469,41 @@ function DatosAbiertos() {
             Todas las fuentes fueron integradas a escala municipal mediante homologación
             territorial, limpieza de códigos DIVIPOLA y construcción de indicadores comparables.
           </div>
+        </div>
+      </div>
+
+      {/* Variables clave */}
+      <div className="mt-16">
+        <div className="text-xs font-bold uppercase tracking-[0.2em] text-primary mb-2">
+          Marco conceptual
+        </div>
+        <h3 className="text-2xl sm:text-3xl font-black tracking-tight">
+          Variables clave para entender el riesgo territorial
+        </h3>
+        <p className="mt-3 text-muted-foreground max-w-3xl">
+          Seis dimensiones se combinan para explicar dónde y por qué un territorio puede transitar
+          de un choque climático a una crisis alimentaria.
+        </p>
+
+        <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {variables.map((v) => (
+            <div
+              key={v.title}
+              className="p-6 rounded-2xl bg-card border border-border hover:border-primary/40 hover:shadow-[var(--shadow-card)] transition"
+            >
+              <div className="flex items-center gap-3">
+                <div className="text-3xl leading-none">{v.emoji}</div>
+                <div className="w-10 h-10 rounded-lg grid place-items-center bg-primary/10 text-primary">
+                  <v.icon className="w-5 h-5" />
+                </div>
+              </div>
+              <div className="mt-4 text-[11px] font-semibold uppercase tracking-widest text-primary">
+                {v.short}
+              </div>
+              <h4 className="mt-1 text-lg font-bold">{v.title}</h4>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{v.body}</p>
+            </div>
+          ))}
         </div>
       </div>
     </Section>
@@ -533,13 +567,14 @@ function Metodologia() {
 
 /* ---------- Resultados ---------- */
 function Resultados() {
+  const total = municipios.length;
   const kpis = [
-    { v: "1.100+", l: "Municipios analizados", icon: MapPin },
+    { v: total.toLocaleString("es-CO"), l: "Municipios analizados", icon: MapPin },
     { v: "7", l: "Familias de variables integradas", icon: Layers },
     { v: "Municipal", l: "Escala de análisis", icon: Target },
     { v: "KPI + Clusters", l: "Productos principales", icon: BarChart3 },
   ];
-  const top = demoMunicipios.slice(0, 10);
+  const top = [...municipios].sort((a, b) => b.kpi - a.kpi).slice(0, 15);
 
   return (
     <Section
@@ -561,22 +596,27 @@ function Resultados() {
 
       <div className="mt-8 grid lg:grid-cols-[1.4fr_1fr] gap-6">
         <div className="rounded-2xl bg-card border border-border p-5">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
             <div>
               <div className="font-bold">Mapa de riesgo municipal</div>
-              <div className="text-xs text-muted-foreground">Placeholder de mapa · Colombia</div>
+              <div className="text-xs text-muted-foreground">Colombia · KPI municipal</div>
             </div>
             <Legend2 />
           </div>
-          <FakeMap />
+          <img
+            src={mapaImg}
+            alt="Mapa de Colombia con priorización municipal por KPI"
+            className="w-full h-auto rounded-xl border border-border shadow-[var(--shadow-card)] object-contain bg-background"
+            loading="lazy"
+          />
         </div>
 
         <div className="rounded-2xl bg-card border border-border overflow-hidden">
           <div className="px-5 py-4 border-b border-border">
             <div className="font-bold">Ranking de priorización</div>
-            <div className="text-xs text-muted-foreground">Top municipios por KPI</div>
+            <div className="text-xs text-muted-foreground">Top 15 municipios por KPI</div>
           </div>
-          <div className="max-h-[420px] overflow-y-auto divide-y divide-border">
+          <div className="max-h-[520px] overflow-y-auto divide-y divide-border">
             {top.map((m, i) => (
               <div key={m.codigo} className="p-4 flex items-center gap-3 hover:bg-muted/40">
                 <div className="text-xs font-black w-6 text-muted-foreground">{i + 1}</div>
@@ -585,30 +625,51 @@ function Resultados() {
                   <div className="text-xs text-muted-foreground truncate">
                     {m.departamento} · Cluster {m.cluster}
                   </div>
-                  <div className="mt-1 flex flex-wrap gap-1">
-                    {m.factores.slice(0, 2).map((f) => (
-                      <span
-                        key={f}
-                        className="text-[10px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground"
-                      >
-                        {f}
-                      </span>
-                    ))}
-                  </div>
                 </div>
                 <div className="text-right shrink-0">
                   <div
-                    className="px-2 py-1 rounded font-black text-sm"
-                    style={{ background: riskColor(m.kpi), color: "white" }}
+                    className="px-2 py-1 rounded font-black text-sm text-white"
+                    style={{ background: quintileColor(m.kpi_quintile) }}
                   >
-                    {m.kpi}
+                    {m.kpi.toFixed(2)}
                   </div>
                   <div className="text-[10px] uppercase mt-0.5 text-muted-foreground">
-                    {riskLabel(m.kpi)}
+                    {m.kpi_quintile}
                   </div>
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-8 p-6 sm:p-8 rounded-2xl border border-primary/20 bg-card shadow-[var(--shadow-card)] relative overflow-hidden">
+        <div
+          className="absolute left-0 top-0 bottom-0 w-1.5"
+          style={{ background: "var(--gradient-primary)" }}
+        />
+        <div className="flex items-start gap-4">
+          <div
+            className="w-11 h-11 rounded-xl grid place-items-center text-primary-foreground shrink-0"
+            style={{ background: "var(--gradient-primary)" }}
+          >
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="text-xs font-bold uppercase tracking-widest text-primary mb-2">
+              Uso del índice
+            </div>
+            <p className="text-sm sm:text-base leading-relaxed text-foreground/90">
+              Mediante la focalización de los territorios que presentan la combinación más crítica
+              de estos factores, las entidades responsables podrán implementar acciones preventivas
+              dirigidas a fortalecer la seguridad alimentaria y nutricional, mejorar la
+              preparación ante emergencias, optimizar la asignación de recursos públicos y reducir
+              el riesgo de deterioro nutricional en la población más vulnerable. De esta forma, el
+              índice se convierte en un instrumento de gestión prospectiva que contribuye a la
+              garantía progresiva del Derecho Humano a la Alimentación Adecuada y al
+              fortalecimiento de la resiliencia de los sistemas agroalimentarios territoriales
+              frente a los desafíos derivados de la variabilidad y el cambio climático.
+            </p>
           </div>
         </div>
       </div>
@@ -617,13 +678,15 @@ function Resultados() {
 }
 
 function Legend2() {
-  const items = [
-    ["Alto", "var(--chart-4)"],
-    ["Medio", "var(--chart-3)"],
+  const items: [string, string][] = [
+    ["Muy Alto", "var(--chart-4)"],
+    ["Alto", "var(--chart-3)"],
+    ["Medio", "var(--chart-5)"],
     ["Bajo", "var(--chart-1)"],
+    ["Muy Bajo", "var(--primary)"],
   ];
   return (
-    <div className="flex gap-3 text-xs">
+    <div className="flex flex-wrap gap-2 text-xs">
       {items.map(([l, c]) => (
         <div key={l} className="flex items-center gap-1.5">
           <span className="w-3 h-3 rounded" style={{ background: c }} />
@@ -634,65 +697,42 @@ function Legend2() {
   );
 }
 
-function FakeMap() {
-  const muns = demoMunicipios.slice(0, 60);
-  return (
-    <div className="relative aspect-[4/5] w-full rounded-xl bg-gradient-to-br from-secondary/5 to-primary/5 overflow-hidden border border-border">
-      <svg viewBox="0 0 100 125" className="absolute inset-0 w-full h-full">
-        <path
-          d="M55 8 L48 18 L38 22 L32 32 L28 44 L34 52 L30 62 L38 72 L44 82 L52 100 L60 112 L68 105 L72 90 L76 72 L74 55 L68 40 L62 25 L55 8 Z"
-          fill="var(--muted)"
-          stroke="var(--border)"
-          strokeWidth="0.4"
-        />
-        {muns.map((m, i) => {
-          const x = 32 + ((i * 13) % 42);
-          const y = 15 + ((i * 17) % 95);
-          return (
-            <circle
-              key={m.codigo}
-              cx={x}
-              cy={y}
-              r={1.6 + (m.kpi / 100) * 2}
-              fill={riskColor(m.kpi)}
-              opacity={0.85}
-            >
-              <title>{`${m.municipio} · KPI ${m.kpi}`}</title>
-            </circle>
-          );
-        })}
-      </svg>
-      <div className="absolute bottom-3 left-3 text-[10px] text-muted-foreground bg-background/80 px-2 py-1 rounded">
-        Datos de demostración
-      </div>
-    </div>
-  );
-}
-
 /* ---------- KPI municipal ---------- */
 function KpiSection() {
-  const [sel, setSel] = useState<string>(demoMunicipios[0].codigo);
-  const m = useMemo(
-    () => demoMunicipios.find((x) => x.codigo === sel) ?? demoMunicipios[0],
-    [sel],
+  const [dep, setDep] = useState<string>(departamentos[0] ?? "");
+  const munsDep = useMemo(
+    () =>
+      municipios
+        .filter((m) => m.departamento === dep)
+        .sort((a, b) => a.municipio.localeCompare(b.municipio, "es")),
+    [dep],
   );
-  const radarData = [
-    { k: "Exposición climática", v: Math.min(100, (m.temperatura - 18) * 7 + 30) },
-    { k: "Estrés vegetal", v: Math.round((1 - m.ndvi) * 100) },
-    { k: "Inseguridad alimentaria", v: m.inseguridad_alimentaria },
-    { k: "Baja conectividad", v: 100 - m.suficiencia_vias },
-    { k: "Ruralidad", v: m.poblacion_rural },
-    { k: "Calidad de agua (IRCA)", v: m.irca },
-  ];
+  const [sel, setSel] = useState<string>(munsDep[0]?.codigo ?? "");
+  const m =
+    munsDep.find((x) => x.codigo === sel) ?? munsDep[0] ?? municipios[0];
+
+  // reset selección al cambiar depto
+  const currentSelValid = munsDep.some((x) => x.codigo === sel);
+  const effectiveSel = currentSelValid ? sel : munsDep[0]?.codigo ?? "";
+
+  const activeMun =
+    municipios.find((x) => x.codigo === effectiveSel) ?? m;
+
+  const radarData = useMemo(() => perfilRiesgo(activeMun), [activeMun]);
 
   const stat = [
-    { l: "Temperatura media", v: `${m.temperatura} °C` },
-    { l: "NDVI", v: m.ndvi.toFixed(2) },
-    { l: "Inseguridad alimentaria", v: `${m.inseguridad_alimentaria}%` },
-    { l: "Suficiencia de vías", v: `${m.suficiencia_vias}%` },
-    { l: "Tipos de cultivos", v: m.cultivos },
-    { l: "Población rural", v: `${m.poblacion_rural}%` },
-    { l: "Cluster asignado", v: `#${m.cluster}` },
+    { l: "Departamento", v: activeMun.departamento },
+    { l: "Municipio", v: activeMun.municipio },
+    { l: "KPI", v: activeMun.kpi.toFixed(3) },
+    { l: "Quintil KPI", v: activeMun.kpi_quintile || "—" },
+    { l: "Cluster", v: `#${activeMun.cluster}` },
+    { l: "Inseguridad alimentaria", v: pct(activeMun.inseguridad) },
+    { l: "IRCA", v: activeMun.irca.toFixed(2) },
+    { l: "Suficiencia de vías", v: activeMun.suficiencia_vias.toFixed(2) },
+    { l: "Temperatura media", v: `${activeMun.temperatura.toFixed(1)} °C` },
+    { l: "NDVI", v: activeMun.ndvi.toFixed(3) },
+    { l: "Población rural", v: pct(activeMun.poblacion_rural) },
+    { l: "Tipos de cultivos", v: activeMun.cultivos },
   ];
 
   return (
@@ -700,37 +740,60 @@ function KpiSection() {
       id="kpi"
       eyebrow="KPI municipal"
       title="Riesgo territorial explicable"
-      subtitle="Riesgo = exposición climática + estrés vegetal + inseguridad alimentaria + baja conectividad + ruralidad + exposición productiva."
+      subtitle="Perfil comparativo estandarizado 0-100 donde valores altos representan mayor riesgo. Suficiencia vial y NDVI se invierten para reflejar que valores bajos aumentan la vulnerabilidad."
     >
       <div className="grid lg:grid-cols-[1fr_1.3fr] gap-6">
         <div className="p-6 rounded-2xl bg-card border border-border">
-          <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Municipio
-          </label>
-          <select
-            value={sel}
-            onChange={(e) => setSel(e.target.value)}
-            className="mt-2 w-full px-3 py-2.5 rounded-lg border border-input bg-background font-semibold"
-          >
-            {demoMunicipios.map((mu) => (
-              <option key={mu.codigo} value={mu.codigo}>
-                {mu.municipio} — {mu.departamento}
-              </option>
-            ))}
-          </select>
+          <div className="grid grid-cols-1 gap-3">
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Departamento
+              </label>
+              <select
+                value={dep}
+                onChange={(e) => {
+                  setDep(e.target.value);
+                  setSel("");
+                }}
+                className="mt-2 w-full px-3 py-2.5 rounded-lg border border-input bg-background font-semibold"
+              >
+                {departamentos.map((d) => (
+                  <option key={d} value={d}>
+                    {d}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                Municipio
+              </label>
+              <select
+                value={effectiveSel}
+                onChange={(e) => setSel(e.target.value)}
+                className="mt-2 w-full px-3 py-2.5 rounded-lg border border-input bg-background font-semibold"
+              >
+                {munsDep.map((mu) => (
+                  <option key={mu.codigo} value={mu.codigo}>
+                    {mu.municipio}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
 
           <div className="mt-6 flex items-center gap-4">
             <div
-              className="w-24 h-24 rounded-2xl grid place-items-center font-black text-4xl text-white shadow-[var(--shadow-elegant)]"
-              style={{ background: riskColor(m.kpi) }}
+              className="w-24 h-24 rounded-2xl grid place-items-center font-black text-3xl text-white shadow-[var(--shadow-elegant)]"
+              style={{ background: quintileColor(activeMun.kpi_quintile) }}
             >
-              {m.kpi}
+              {activeMun.kpi.toFixed(2)}
             </div>
             <div>
               <div className="text-xs uppercase text-muted-foreground">Nivel de riesgo</div>
-              <div className="text-2xl font-black">{riskLabel(m.kpi)}</div>
+              <div className="text-2xl font-black">{activeMun.kpi_quintile || "—"}</div>
               <div className="text-xs text-muted-foreground mt-1">
-                {m.municipio}, {m.departamento}
+                {activeMun.municipio}, {activeMun.departamento}
               </div>
             </div>
           </div>
@@ -739,34 +802,36 @@ function KpiSection() {
             {stat.map((s) => (
               <div key={s.l} className="p-3 rounded-lg bg-muted/60">
                 <div className="text-[11px] text-muted-foreground">{s.l}</div>
-                <div className="font-bold">{s.v}</div>
+                <div className="font-bold truncate">{s.v}</div>
               </div>
             ))}
           </div>
 
-          <div className="mt-4 flex flex-wrap gap-1.5">
-            {m.factores.map((f) => (
-              <span
-                key={f}
-                className="text-xs px-2 py-1 rounded-full bg-accent/20 text-accent-foreground border border-accent/30 inline-flex items-center gap-1"
-              >
-                <AlertTriangle className="w-3 h-3" /> {f}
-              </span>
-            ))}
-          </div>
-          <div className="mt-4 text-[10px] uppercase tracking-widest text-muted-foreground">
-            Datos de demostración
+          <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
+            <AlertTriangle className="w-3.5 h-3.5" />
+            Valores comparados frente a los 1.122 municipios del país.
           </div>
         </div>
 
         <div className="p-6 rounded-2xl bg-card border border-border">
-          <div className="font-bold mb-4">Perfil de riesgo — {m.municipio}</div>
+          <div className="font-bold mb-1">Perfil de riesgo — {activeMun.municipio}</div>
+          <div className="text-xs text-muted-foreground mb-4">
+            Escala 0-100. Alto = mayor riesgo.
+          </div>
           <div className="h-[380px]">
             <ResponsiveContainer>
               <RadarChart data={radarData} outerRadius="80%">
                 <PolarGrid stroke="var(--border)" />
-                <PolarAngleAxis dataKey="k" tick={{ fontSize: 11, fill: "var(--muted-foreground)" }} />
-                <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fontSize: 10 }} stroke="var(--border)" />
+                <PolarAngleAxis
+                  dataKey="k"
+                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                />
+                <PolarRadiusAxis
+                  angle={90}
+                  domain={[0, 100]}
+                  tick={{ fontSize: 10 }}
+                  stroke="var(--border)"
+                />
                 <Radar
                   name="Riesgo"
                   dataKey="v"
@@ -784,6 +849,30 @@ function KpiSection() {
               </RadarChart>
             </ResponsiveContainer>
           </div>
+
+          <div className="mt-4 h-[220px]">
+            <ResponsiveContainer>
+              <BarChart data={radarData} layout="vertical" margin={{ left: 20 }}>
+                <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" />
+                <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 10 }} />
+                <YAxis
+                  type="category"
+                  dataKey="k"
+                  width={160}
+                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    background: "var(--card)",
+                    border: "1px solid var(--border)",
+                    borderRadius: 8,
+                    fontSize: 12,
+                  }}
+                />
+                <Bar dataKey="v" fill="var(--primary)" radius={[0, 6, 6, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
       </div>
     </Section>
@@ -792,15 +881,62 @@ function KpiSection() {
 
 /* ---------- Clusters ---------- */
 function ClustersSection() {
-  const scatterData = demoMunicipios.map((m) => ({
-    x: m.inseguridad_alimentaria,
-    y: m.suficiencia_vias,
-    z: m.kpi,
-    cluster: m.cluster,
-    name: m.municipio,
-  }));
-  const byCluster = (c: number) => scatterData.filter((d) => d.cluster === c);
-  const colors = ["var(--chart-4)", "var(--chart-1)", "var(--chart-3)"];
+  const segments = [
+    {
+      accent: "var(--chart-4)",
+      accentSoft: "color-mix(in oklab, var(--chart-4) 12%, var(--card))",
+      tono: "Alta prioridad",
+      titulo: "Municipios cálidos en crisis: agua y alimentos en riesgo",
+      rows: [
+        ["🏷️ Clima", "Cálido (25°C promedio)"],
+        ["🍽️ Inseguridad alimentaria grave", "39% (la más alta)"],
+        ["💧 IRCA (riesgo del agua)", "15.4 (riesgo muy alto)"],
+        ["🛣️ Suficiencia de vías", "9.2 (la más baja)"],
+        ["🌾 Diversidad de cultivos", "5.0 (la más baja)"],
+        ["👨‍🌾 Población rural", "57%"],
+        ["📊 KPI (prioridad)", "2.61 (máxima)"],
+        ["🏘️ Municipios", "363"],
+      ],
+      accion:
+        "Urge intervenir en calidad del agua, seguridad alimentaria y conectividad vial. Es el grupo con mayor vulnerabilidad acumulada.",
+    },
+    {
+      accent: "var(--primary)",
+      accentSoft: "color-mix(in oklab, var(--primary) 10%, var(--card))",
+      tono: "Base estructural sólida",
+      titulo: "Municipios de montaña: ruralidad activa y mejor resiliencia",
+      rows: [
+        ["🏷️ Clima", "Templado-frío (16°C promedio)"],
+        ["🍽️ Inseguridad alimentaria grave", "22% (la más baja)"],
+        ["💧 IRCA (riesgo del agua)", "8.0 (riesgo medio)"],
+        ["🛣️ Suficiencia de vías", "20.0 (la más alta)"],
+        ["🌾 Diversidad de cultivos", "5.5 (la más alta)"],
+        ["👨‍🌾 Población rural", "67% (la más alta)"],
+        ["📊 KPI (prioridad)", "2.34 (intermedia)"],
+        ["🏘️ Municipios", "438 (grupo más grande)"],
+      ],
+      accion:
+        "Fortalecer la economía rural, mantener la diversificación agrícola y mejorar la calidad del agua de forma preventiva. Es el grupo con mejor base estructural.",
+    },
+    {
+      accent: "var(--chart-3)",
+      accentSoft: "color-mix(in oklab, var(--chart-3) 14%, var(--card))",
+      tono: "Piloto y sostenimiento",
+      titulo: "Municipios de transición: menor riesgo urbano-rural",
+      rows: [
+        ["🏷️ Clima", "Intermedio (21°C promedio)"],
+        ["🍽️ Inseguridad alimentaria grave", "25% (moderada)"],
+        ["💧 IRCA (riesgo del agua)", "5.2 (el más bajo)"],
+        ["🛣️ Suficiencia de vías", "14.2 (intermedio)"],
+        ["🌾 Diversidad de cultivos", "5.4 (intermedio)"],
+        ["👨‍🌾 Población rural", "34% (la más baja)"],
+        ["📊 KPI (prioridad)", "2.16 (la más baja)"],
+        ["🏘️ Municipios", "320"],
+      ],
+      accion:
+        "Mantener la calidad del agua, promover proyectos urbanos-rurales y evitar el deterioro ambiental asociado a menor NDVI. Es el grupo con mejor posición relativa, ideal para acciones piloto.",
+    },
+  ];
 
   return (
     <Section
@@ -811,152 +947,72 @@ function ClustersSection() {
       className="bg-muted/40"
     >
       <div className="grid lg:grid-cols-3 gap-5">
-        {clusters.map((c, i) => {
-          const n = demoMunicipios.filter((m) => m.cluster === c.id).length;
-          const avg = Math.round(
-            demoMunicipios.filter((m) => m.cluster === c.id).reduce((a, m) => a + m.kpi, 0) / n,
-          );
-          return (
+        {segments.map((s, i) => (
+          <div
+            key={i}
+            className="rounded-2xl bg-card border border-border overflow-hidden flex flex-col shadow-[var(--shadow-card)]"
+          >
             <div
-              key={c.id}
-              className="rounded-2xl bg-card border border-border overflow-hidden flex flex-col"
+              className="px-5 py-4 border-b border-border"
+              style={{ background: s.accentSoft }}
             >
-              <div className="p-5 border-b border-border" style={{ background: colors[i], color: "white" }}>
-                <div className="text-xs uppercase tracking-widest opacity-90">Cluster {c.id}</div>
-                <div className="font-bold mt-1">{c.nombre}</div>
+              <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest">
+                <span
+                  className="w-2.5 h-2.5 rounded-full"
+                  style={{ background: s.accent }}
+                />
+                Segmento {i + 1} · {s.tono}
               </div>
-              <div className="p-5 space-y-4 flex-1">
-                <p className="text-sm text-muted-foreground">{c.descripcion}</p>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="p-3 rounded-lg bg-muted/60">
-                    <div className="text-[10px] text-muted-foreground uppercase">Municipios</div>
-                    <div className="text-xl font-black">{n}</div>
-                  </div>
-                  <div className="p-3 rounded-lg bg-muted/60">
-                    <div className="text-[10px] text-muted-foreground uppercase">KPI promedio</div>
-                    <div className="text-xl font-black">{avg}</div>
-                  </div>
+              <div className="mt-2 font-bold text-base leading-snug">{s.titulo}</div>
+            </div>
+            <div className="p-5 space-y-3 flex-1">
+              <ul className="space-y-2 text-sm">
+                {s.rows.map(([label, value]) => (
+                  <li key={label} className="flex items-baseline justify-between gap-3 border-b border-border/60 pb-1.5 last:border-0">
+                    <span className="text-muted-foreground">{label}</span>
+                    <span className="font-semibold text-right">{value}</span>
+                  </li>
+                ))}
+              </ul>
+              <div
+                className="p-3 rounded-lg text-sm"
+                style={{
+                  background: s.accentSoft,
+                  borderLeft: `3px solid ${s.accent}`,
+                }}
+              >
+                <div className="text-[11px] font-bold uppercase tracking-wider mb-1">
+                  Acción prioritaria
                 </div>
-                <div>
-                  <div className="text-[11px] font-semibold uppercase text-muted-foreground mb-1.5">
-                    Variables más altas
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {c.variables_altas.map((v) => (
-                      <span key={v} className="text-xs px-2 py-0.5 rounded bg-primary/10 text-primary">
-                        {v}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-[11px] font-semibold uppercase text-muted-foreground mb-1.5">
-                    Variables más bajas
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {c.variables_bajas.map((v) => (
-                      <span key={v} className="text-xs px-2 py-0.5 rounded bg-muted text-muted-foreground">
-                        {v}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <div className="p-3 rounded-lg border border-primary/20 bg-primary/5">
-                  <div className="text-[11px] font-semibold uppercase text-primary mb-1">
-                    Recomendación
-                  </div>
-                  <div className="text-sm">{c.recomendacion}</div>
-                </div>
+                {s.accion}
               </div>
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
 
-      <div className="mt-8 grid lg:grid-cols-[1.4fr_1fr] gap-6">
+      <div className="mt-8 grid lg:grid-cols-2 gap-6">
         <div className="p-6 rounded-2xl bg-card border border-border">
-          <div className="font-bold mb-1">Mapa perceptual de municipios</div>
-          <div className="text-xs text-muted-foreground mb-4">
-            Inseguridad alimentaria vs. suficiencia de vías — tamaño = KPI
-          </div>
-          <div className="h-[380px]">
-            <ResponsiveContainer>
-              <ScatterChart>
-                <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" />
-                <XAxis
-                  type="number"
-                  dataKey="x"
-                  name="Inseg. alimentaria"
-                  unit="%"
-                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-                />
-                <YAxis
-                  type="number"
-                  dataKey="y"
-                  name="Suficiencia vías"
-                  unit="%"
-                  tick={{ fontSize: 11, fill: "var(--muted-foreground)" }}
-                />
-                <ZAxis type="number" dataKey="z" range={[40, 300]} />
-                <Tooltip
-                  cursor={{ strokeDasharray: "3 3" }}
-                  contentStyle={{
-                    background: "var(--card)",
-                    border: "1px solid var(--border)",
-                    borderRadius: 8,
-                    fontSize: 12,
-                  }}
-                />
-                <Legend />
-                {[1, 2, 3].map((c, i) => (
-                  <Scatter
-                    key={c}
-                    name={`Cluster ${c}`}
-                    data={byCluster(c)}
-                    fill={colors[i].replace("var(--", "").replace(")", "")}
-                  >
-                    {byCluster(c).map((_, idx) => (
-                      <circle key={idx} fill={colors[i]} />
-                    ))}
-                  </Scatter>
-                ))}
-              </ScatterChart>
-            </ResponsiveContainer>
-          </div>
+          <div className="font-bold mb-4">Mapa perceptual</div>
+          <img
+            src={perceptualImg}
+            alt="Mapa perceptual de municipios por clusters"
+            className="w-full h-auto rounded-xl border border-border shadow-[var(--shadow-card)] object-contain bg-background"
+            loading="lazy"
+          />
         </div>
 
         <div className="p-6 rounded-2xl bg-card border border-border">
-          <div className="font-bold mb-1">Dendrograma (placeholder)</div>
+          <div className="font-bold mb-1">Dendrograma</div>
           <div className="text-xs text-muted-foreground mb-4">
             Agrupamiento jerárquico exploratorio
           </div>
-          <svg viewBox="0 0 200 220" className="w-full h-[300px]">
-            {(() => {
-              const lines: React.ReactElement[] = [];
-              const leaves = 10;
-              const step = 180 / leaves;
-              for (let i = 0; i < leaves; i++) {
-                const x = 10 + i * step;
-                lines.push(<line key={`v${i}`} x1={x} y1={200} x2={x} y2={170 - (i % 4) * 15} stroke="var(--primary)" strokeWidth="1.2" />);
-              }
-              lines.push(<line key="h1" x1={10} y1={170} x2={10 + step} y2={170} stroke="var(--primary)" strokeWidth="1.2" />);
-              lines.push(<line key="h2" x1={10 + 2 * step} y1={155} x2={10 + 3 * step} y2={155} stroke="var(--secondary)" strokeWidth="1.2" />);
-              lines.push(<line key="h3" x1={10 + 4 * step} y1={140} x2={10 + 5 * step} y2={140} stroke="var(--chart-3)" strokeWidth="1.2" />);
-              lines.push(<line key="h4" x1={10 + 6 * step} y1={125} x2={10 + 7 * step} y2={125} stroke="var(--primary)" strokeWidth="1.2" />);
-              lines.push(<line key="h5" x1={10 + 8 * step} y1={130} x2={10 + 9 * step} y2={130} stroke="var(--secondary)" strokeWidth="1.2" />);
-              lines.push(<line key="j1" x1={10 + 0.5 * step} y1={170} x2={10 + 0.5 * step} y2={110} stroke="var(--primary)" strokeWidth="1.2" />);
-              lines.push(<line key="j2" x1={10 + 2.5 * step} y1={155} x2={10 + 2.5 * step} y2={110} stroke="var(--secondary)" strokeWidth="1.2" />);
-              lines.push(<line key="jh1" x1={10 + 0.5 * step} y1={110} x2={10 + 2.5 * step} y2={110} stroke="var(--primary)" strokeWidth="1.2" />);
-              lines.push(<line key="j3" x1={10 + 4.5 * step} y1={140} x2={10 + 4.5 * step} y2={95} stroke="var(--chart-3)" strokeWidth="1.2" />);
-              lines.push(<line key="j4" x1={10 + 6.5 * step} y1={125} x2={10 + 6.5 * step} y2={95} stroke="var(--chart-3)" strokeWidth="1.2" />);
-              lines.push(<line key="jh2" x1={10 + 4.5 * step} y1={95} x2={10 + 6.5 * step} y2={95} stroke="var(--chart-3)" strokeWidth="1.2" />);
-              lines.push(<line key="j5" x1={10 + 8.5 * step} y1={130} x2={10 + 8.5 * step} y2={80} stroke="var(--secondary)" strokeWidth="1.2" />);
-              lines.push(<line key="top1" x1={10 + 1.5 * step} y1={110} x2={10 + 1.5 * step} y2={50} stroke="var(--primary)" strokeWidth="1.5" />);
-              lines.push(<line key="top2" x1={10 + 5.5 * step} y1={95} x2={10 + 5.5 * step} y2={50} stroke="var(--chart-3)" strokeWidth="1.5" />);
-              lines.push(<line key="topH" x1={10 + 1.5 * step} y1={50} x2={10 + 5.5 * step} y2={50} stroke="var(--foreground)" strokeWidth="1.5" />);
-              return lines;
-            })()}
-          </svg>
+          <img
+            src={dendroImg}
+            alt="Dendrograma del agrupamiento jerárquico de municipios"
+            className="w-full h-auto rounded-xl border border-border shadow-[var(--shadow-card)] object-contain bg-background"
+            loading="lazy"
+          />
         </div>
       </div>
     </Section>
@@ -965,11 +1021,19 @@ function ClustersSection() {
 
 /* ---------- IA ---------- */
 function IASection() {
-  const cards = [
-    { icon: Network, t: "Modelamiento espacio-temporal", d: "Identifica relaciones entre clima, vegetación y vulnerabilidad territorial." },
-    { icon: Brain, t: "Clustering no supervisado", d: "Agrupa municipios con patrones similares para diseñar intervenciones diferenciadas." },
-    { icon: Satellite, t: "Análisis satelital", d: "NDVI de Sentinel-2 como señal de vigor vegetal y estrés territorial." },
-    { icon: ShieldCheck, t: "Interpretabilidad", d: "Explica qué variables aportan más al riesgo municipal." },
+  const modelos = [
+    {
+      icon: Network,
+      tag: "Modelo espacio-temporal profundo",
+      t: "ST-GNN",
+      d: "Detecta tendencias, no solo números. Anticipa hacia dónde se dirige una crisis de desnutrición o vulnerabilidad alimentaria, en lugar de entregar únicamente un valor puntual. Permite aprender patrones espacio-temporales entre municipios y señales climáticas, vegetacionales y sociales.",
+    },
+    {
+      icon: Activity,
+      tag: "Modelo econométrico espacial",
+      t: "S2SLS",
+      d: "Incorpora rezagos temporales y espaciales para capturar inercia y contagio entre municipios vecinos. Permite analizar cómo los choques climáticos y territoriales pueden propagarse o mantenerse en el tiempo.",
+    },
   ];
   const validacion = [
     "Homologación territorial mediante códigos municipales.",
@@ -986,14 +1050,29 @@ function IASection() {
       title="IA para anticipar, explicar y priorizar"
       subtitle="IA explicable para fortalecer la seguridad alimentaria y guiar decisiones públicas."
     >
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {cards.map((c) => (
-          <div key={c.t} className="p-5 rounded-2xl border border-border bg-card hover:border-primary/40 transition">
-            <div className="w-10 h-10 rounded-lg grid place-items-center bg-secondary text-secondary-foreground mb-3">
-              <c.icon className="w-5 h-5" />
+      <div className="grid md:grid-cols-2 gap-5">
+        {modelos.map((m) => (
+          <div
+            key={m.t}
+            className="p-7 rounded-2xl border border-border bg-card hover:border-primary/40 transition shadow-[var(--shadow-card)]"
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className="w-12 h-12 rounded-xl grid place-items-center text-primary-foreground"
+                style={{ background: "var(--gradient-primary)" }}
+              >
+                <m.icon className="w-6 h-6" />
+              </div>
+              <div>
+                <div className="text-[11px] font-bold uppercase tracking-widest text-primary">
+                  {m.tag}
+                </div>
+                <div className="text-2xl font-black tracking-tight">{m.t}</div>
+              </div>
             </div>
-            <div className="font-bold text-sm">{c.t}</div>
-            <div className="mt-1 text-xs text-muted-foreground leading-relaxed">{c.d}</div>
+            <p className="mt-4 text-sm sm:text-base text-muted-foreground leading-relaxed">
+              {m.d}
+            </p>
           </div>
         ))}
       </div>
@@ -1039,7 +1118,6 @@ function Impacto() {
       id="impacto"
       eyebrow="Impacto y escalabilidad"
       title="Diseñado con los criterios del concurso en mente"
-      className="bg-muted/40"
     >
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {cards.map((c) => (
@@ -1068,7 +1146,7 @@ function CasosDeUso() {
     { t: "Sector social y salud pública", d: "Anticipación de territorios donde el deterioro climático puede afectar la seguridad alimentaria y la nutrición.", icon: HeartPulse },
   ];
   return (
-    <Section id="casos" eyebrow="Casos de uso" title="Hecho para quien toma decisiones">
+    <Section id="casos" eyebrow="Casos de uso" title="Hecho para quien toma decisiones" className="bg-muted/40">
       <div className="grid md:grid-cols-3 gap-5">
         {casos.map((c) => (
           <div key={c.t} className="p-6 rounded-2xl border border-border bg-card">
@@ -1082,58 +1160,55 @@ function CasosDeUso() {
   );
 }
 
-/* ---------- Demo ---------- */
-function Demo() {
+/* ---------- Consulta ---------- */
+function ConsultaSection() {
   const [dep, setDep] = useState("Todos");
   const [nivel, setNivel] = useState("Todos");
   const [cluster, setCluster] = useState("Todos");
   const [query, setQuery] = useState("");
-  const [rows, setRows] = useState<Municipio[]>(demoMunicipios);
 
-  const departments = useMemo(
-    () => ["Todos", ...Array.from(new Set(demoMunicipios.map((m) => m.departamento))).sort()],
+  const deps = useMemo(() => ["Todos", ...departamentos], []);
+  const clustersList = useMemo(
+    () => Array.from(new Set(municipios.map((m) => m.cluster))).sort(),
     [],
   );
 
-  const filtered = rows.filter((m) => {
-    if (dep !== "Todos" && m.departamento !== dep) return false;
-    if (nivel !== "Todos" && riskLabel(m.kpi) !== nivel) return false;
-    if (cluster !== "Todos" && String(m.cluster) !== cluster) return false;
-    if (query && !m.municipio.toLowerCase().includes(query.toLowerCase())) return false;
-    return true;
+  const filtered = useMemo(
+    () =>
+      municipios.filter((m) => {
+        if (dep !== "Todos" && m.departamento !== dep) return false;
+        if (nivel !== "Todos" && m.kpi_quintile !== nivel) return false;
+        if (cluster !== "Todos" && String(m.cluster) !== cluster) return false;
+        if (query && !m.municipio.toLowerCase().includes(query.toLowerCase())) return false;
+        return true;
+      }),
+    [dep, nivel, cluster, query],
+  );
+
+  const summary = clustersList.map((c) => {
+    const items = filtered.filter((m) => m.cluster === c);
+    return {
+      cluster: `C${c}`,
+      municipios: items.length,
+      kpi_x100: items.length ? +(items.reduce((a, m) => a + m.kpi, 0) / items.length * 100).toFixed(1) : 0,
+    };
   });
-
-  const summary = [1, 2, 3].map((c) => ({
-    cluster: `C${c}`,
-    municipios: filtered.filter((m) => m.cluster === c).length,
-    kpi: Math.round(
-      filtered.filter((m) => m.cluster === c).reduce((a, m) => a + m.kpi, 0) /
-        Math.max(1, filtered.filter((m) => m.cluster === c).length),
-    ),
-  }));
-
-  function handleUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const f = e.target.files?.[0];
-    if (!f) return;
-    alert(
-      `Archivo "${f.name}" recibido. En esta versión demo se conservan los datos de ejemplo. La conexión a datos reales quedará habilitada en la siguiente iteración.`,
-    );
-  }
 
   function downloadCsv() {
     const headers = [
-      "codigo", "municipio", "departamento", "inseguridad_alimentaria", "irca",
-      "suficiencia_vias", "cultivos", "temperatura", "ndvi", "poblacion_rural", "kpi", "cluster",
+      "MpCodigo","Divipola","Departamento","Municipio",
+      "Inseguridad","IRCA","Suficiencia_vias","Cultivos",
+      "Temperatura","NDVI","Poblacion_rural","KPI","KPI_Quintile","Cluster",
     ];
-    const csv =
-      headers.join(",") +
-      "\n" +
-      filtered
-        .map((m) =>
-          [m.codigo, m.municipio, m.departamento, m.inseguridad_alimentaria, m.irca, m.suficiencia_vias, m.cultivos, m.temperatura, m.ndvi, m.poblacion_rural, m.kpi, m.cluster].join(","),
-        )
-        .join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
+    const csv = [
+      headers.join(","),
+      ...filtered.map((m) => [
+        m.codigo, m.divipola, m.departamento, `"${m.municipio}"`,
+        m.inseguridad, m.irca, m.suficiencia_vias, m.cultivos,
+        m.temperatura, m.ndvi, m.poblacion_rural, m.kpi, m.kpi_quintile, m.cluster,
+      ].join(",")),
+    ].join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -1142,28 +1217,17 @@ function Demo() {
     URL.revokeObjectURL(url);
   }
 
+  const rowsView = filtered.slice(0, 300);
+
   return (
     <Section
       id="demo"
-      eyebrow="Demo interactiva"
-      title="Explora, filtra y descarga"
-      subtitle="Carga un CSV o Excel con resultados municipales, o usa los datos de demostración cargados por defecto."
+      eyebrow="Consulta pública"
+      title="Explora los resultados municipales"
+      subtitle="Filtra los 1.122 municipios por departamento, nivel de riesgo o cluster; descarga los resultados o abre el tablero completo."
     >
       <div className="grid lg:grid-cols-[1fr_2fr] gap-6">
         <div className="space-y-4">
-          <label className="block p-5 rounded-2xl border-2 border-dashed border-border bg-card hover:border-primary/50 cursor-pointer transition">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg grid place-items-center bg-primary text-primary-foreground">
-                <Upload className="w-5 h-5" />
-              </div>
-              <div>
-                <div className="font-bold text-sm">Cargar CSV / Excel</div>
-                <div className="text-xs text-muted-foreground">Datos municipales</div>
-              </div>
-            </div>
-            <input type="file" accept=".csv,.xlsx,.xls" className="hidden" onChange={handleUpload} />
-          </label>
-
           <div className="p-5 rounded-2xl bg-card border border-border space-y-3">
             <div className="font-bold text-sm">Filtros</div>
             <input
@@ -1173,13 +1237,16 @@ function Demo() {
               className="w-full px-3 py-2 rounded-lg border border-input bg-background text-sm"
             />
             <select value={dep} onChange={(e) => setDep(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-input bg-background text-sm">
-              {departments.map((d) => <option key={d}>{d}</option>)}
+              {deps.map((d) => <option key={d}>{d}</option>)}
             </select>
             <select value={nivel} onChange={(e) => setNivel(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-input bg-background text-sm">
-              {["Todos", "Alto", "Medio", "Bajo"].map((d) => <option key={d}>{d}</option>)}
+              {["Todos", "Muy Alto", "Alto", "Medio", "Bajo", "Muy Bajo"].map((d) => <option key={d}>{d}</option>)}
             </select>
             <select value={cluster} onChange={(e) => setCluster(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-input bg-background text-sm">
-              {["Todos", "1", "2", "3"].map((d) => <option key={d}>{d === "Todos" ? "Todos los clusters" : `Cluster ${d}`}</option>)}
+              <option value="Todos">Todos los clusters</option>
+              {clustersList.map((c) => (
+                <option key={c} value={String(c)}>Cluster {c}</option>
+              ))}
             </select>
             <button
               onClick={downloadCsv}
@@ -1187,11 +1254,19 @@ function Demo() {
             >
               <Download className="w-4 h-4" /> Descargar resultados
             </button>
+            <a
+              href={DASHBOARD_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-primary/40 text-primary font-semibold hover:bg-primary/5 transition"
+            >
+              <ExternalLink className="w-4 h-4" /> Abrir tablero
+            </a>
           </div>
 
           <div className="p-5 rounded-2xl bg-card border border-border">
             <div className="font-bold text-sm mb-3">Resumen por cluster</div>
-            <div className="h-[180px]">
+            <div className="h-[200px]">
               <ResponsiveContainer>
                 <BarChart data={summary}>
                   <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" />
@@ -1199,9 +1274,12 @@ function Demo() {
                   <YAxis tick={{ fontSize: 11 }} />
                   <Tooltip contentStyle={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: 8, fontSize: 12 }} />
                   <Bar dataKey="municipios" fill="var(--chart-1)" radius={[6, 6, 0, 0]} />
-                  <Bar dataKey="kpi" fill="var(--chart-3)" radius={[6, 6, 0, 0]} />
+                  <Bar dataKey="kpi_x100" fill="var(--chart-3)" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
+            </div>
+            <div className="text-[10px] text-muted-foreground mt-2">
+              kpi_x100 = KPI promedio × 100 para escalar junto al conteo.
             </div>
           </div>
         </div>
@@ -1209,13 +1287,16 @@ function Demo() {
         <div className="rounded-2xl bg-card border border-border overflow-hidden">
           <div className="px-5 py-3 border-b border-border flex items-center justify-between">
             <div className="font-bold text-sm">Tabla de datos municipales</div>
-            <div className="text-xs text-muted-foreground">{filtered.length} municipios</div>
+            <div className="text-xs text-muted-foreground">
+              {filtered.length.toLocaleString("es-CO")} municipios
+              {filtered.length > rowsView.length && ` · mostrando ${rowsView.length}`}
+            </div>
           </div>
-          <div className="overflow-x-auto max-h-[560px]">
+          <div className="overflow-x-auto max-h-[600px]">
             <table className="w-full text-xs">
               <thead className="bg-muted sticky top-0">
                 <tr className="text-muted-foreground">
-                  {["Cód.", "Municipio", "Depto.", "Inseg. alim.", "IRCA", "Vías", "Cultivos", "Temp.", "NDVI", "Rural", "KPI", "Cluster"].map((h) => (
+                  {["Cód.", "Municipio", "Depto.", "Inseg.", "IRCA", "Vías", "Cult.", "Temp.", "NDVI", "Rural", "KPI", "Quintil", "Cl."].map((h) => (
                     <th key={h} className="text-left px-3 py-2 font-semibold uppercase tracking-wider">
                       {h}
                     </th>
@@ -1223,31 +1304,32 @@ function Demo() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((m) => (
+                {rowsView.map((m) => (
                   <tr key={m.codigo} className="border-t border-border hover:bg-muted/40">
                     <td className="px-3 py-2 font-mono text-muted-foreground">{m.codigo}</td>
                     <td className="px-3 py-2 font-semibold">{m.municipio}</td>
                     <td className="px-3 py-2">{m.departamento}</td>
-                    <td className="px-3 py-2">{m.inseguridad_alimentaria}%</td>
-                    <td className="px-3 py-2">{m.irca}</td>
-                    <td className="px-3 py-2">{m.suficiencia_vias}%</td>
+                    <td className="px-3 py-2">{pct(m.inseguridad, 0)}</td>
+                    <td className="px-3 py-2">{m.irca.toFixed(1)}</td>
+                    <td className="px-3 py-2">{m.suficiencia_vias.toFixed(1)}</td>
                     <td className="px-3 py-2">{m.cultivos}</td>
-                    <td className="px-3 py-2">{m.temperatura}°</td>
-                    <td className="px-3 py-2">{m.ndvi}</td>
-                    <td className="px-3 py-2">{m.poblacion_rural}%</td>
+                    <td className="px-3 py-2">{m.temperatura.toFixed(1)}°</td>
+                    <td className="px-3 py-2">{m.ndvi.toFixed(2)}</td>
+                    <td className="px-3 py-2">{pct(m.poblacion_rural, 0)}</td>
                     <td className="px-3 py-2">
-                      <span className="px-2 py-0.5 rounded font-bold text-white" style={{ background: riskColor(m.kpi) }}>
-                        {m.kpi}
+                      <span
+                        className="px-2 py-0.5 rounded font-bold text-white"
+                        style={{ background: quintileColor(m.kpi_quintile) }}
+                      >
+                        {m.kpi.toFixed(2)}
                       </span>
                     </td>
+                    <td className="px-3 py-2">{m.kpi_quintile}</td>
                     <td className="px-3 py-2">C{m.cluster}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </div>
-          <div className="px-5 py-2 text-[10px] uppercase tracking-widest text-muted-foreground border-t border-border">
-            Datos de demostración
           </div>
         </div>
       </div>
@@ -1265,11 +1347,16 @@ function Cierre() {
           SEMILLA convierte datos abiertos en decisiones anticipadas para la resiliencia rural.
         </h2>
         <div className="mt-10 flex flex-wrap justify-center gap-3">
-          <button className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-accent text-accent-foreground font-semibold shadow-lg hover:brightness-105 transition">
-            <Download className="w-4 h-4" /> Descargar resumen metodológico
-          </button>
-          <a href="#" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white/10 border border-white/30 font-semibold hover:bg-white/20 transition">
-            <Github className="w-4 h-4" /> Ver repositorio
+          <a
+            href={DASHBOARD_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg bg-accent text-accent-foreground font-bold text-base shadow-lg hover:brightness-105 transition"
+          >
+            Ver tablero con mayor detalle <ExternalLink className="w-5 h-5" />
+          </a>
+          <a href="#demo" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white/10 border border-white/30 font-semibold hover:bg-white/20 transition">
+            <Droplets className="w-4 h-4" /> Consultar municipios
           </a>
           <a href="#contacto" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white/10 border border-white/30 font-semibold hover:bg-white/20 transition">
             <Mail className="w-4 h-4" /> Contactar equipo
@@ -1312,7 +1399,12 @@ function Footer() {
           <ul className="space-y-1 text-sm opacity-80">
             <li><a href="#metodologia" className="hover:underline">Metodología</a></li>
             <li><a href="#datos" className="hover:underline">Fuentes de datos</a></li>
-            <li><a href="#demo" className="hover:underline">Demo interactiva</a></li>
+            <li><a href="#demo" className="hover:underline">Consulta municipal</a></li>
+            <li>
+              <a href={DASHBOARD_URL} target="_blank" rel="noreferrer" className="hover:underline inline-flex items-center gap-1">
+                Tablero completo <ExternalLink className="w-3 h-3" />
+              </a>
+            </li>
           </ul>
         </div>
       </div>
