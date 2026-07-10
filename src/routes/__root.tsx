@@ -84,14 +84,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "SEMILLA integra datos abiertos, imágenes satelitales e IA para priorizar municipios rurales de Colombia frente al riesgo agroclimático y alimentario.",
       },
       { name: "author", content: "Equipo SEMILLA" },
-      { property: "og:title", content: "SEMILLA — Inteligencia territorial rural" },
+      { property: "og:title", content: "SEMILLA — Inteligencia territorial para riesgo agroclimático" },
       {
         property: "og:description",
         content:
-          "Del dato climático a la decisión territorial: priorización municipal basada en evidencia.",
+          "SEMILLA integra datos abiertos, imágenes satelitales e IA para priorizar municipios rurales de Colombia frente al riesgo agroclimático y alimentario.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "SEMILLA — Inteligencia territorial para riesgo agroclimático" },
+      { name: "twitter:description", content: "SEMILLA integra datos abiertos, imágenes satelitales e IA para priorizar municipios rurales de Colombia frente al riesgo agroclimático y alimentario." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a39bd080-527b-4085-8a13-6ee873e7c64c/id-preview-5a1da5e7--28efa6e9-3eb1-4df0-80c3-4f81079de8c7.lovable.app-1783726109705.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a39bd080-527b-4085-8a13-6ee873e7c64c/id-preview-5a1da5e7--28efa6e9-3eb1-4df0-80c3-4f81079de8c7.lovable.app-1783726109705.png" },
     ],
     links: [
       {
