@@ -1391,7 +1391,7 @@ function Footer() {
           <ul className="space-y-1 text-sm opacity-80">
             <li>Concurso de Datos Abiertos — Colombia</li>
             <li>Reto: Agricultura y Desarrollo Rural</li>
-            <li>Contacto: equipo@semilla.co</li>
+            <li>Contacto: analitica.institucional@icbf.gov.co</li>
           </ul>
         </div>
         <div>
