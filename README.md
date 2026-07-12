@@ -252,3 +252,7 @@ semilla-territorial/
 ├── vite.config.ts             # Configuración de Vite
 ├── tsconfig.json              # Configuración de TypeScript
 └── README.md                  # Documentación principal del proyecto
+```
+
+---
+*Para documentación técnica de desarrollo (stack, ejecución local, configuración de variables de entorno), ver [README_TECNICO.md](./README_TECNICO.md).*

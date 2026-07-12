@@ -51,7 +51,7 @@ import dendroImg from "@/images/Dendrograma.png";
 
 export const Route = createFileRoute("/")({ component: Index });
 
-const DASHBOARD_URL = "https://urchin-nimbly-senate.ngrok-free.dev/";
+const DASHBOARD_URL = import.meta.env.VITE_DASHBOARD_URL || "";
 
 const NAV = [
   ["inicio", "Inicio"],
@@ -140,15 +140,17 @@ function Navbar() {
             </a>
           ))}
         </nav>
-        <a
-          href={DASHBOARD_URL}
-          target="_blank"
-          rel="noreferrer"
-          className="hidden lg:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-md text-primary-foreground shadow-sm"
-          style={{ background: "var(--gradient-primary)" }}
-        >
-          Tablero <ExternalLink className="w-4 h-4" />
-        </a>
+        {DASHBOARD_URL && (
+          <a
+            href={DASHBOARD_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="hidden lg:inline-flex items-center gap-1.5 px-4 py-2 text-sm font-semibold rounded-md text-primary-foreground shadow-sm"
+            style={{ background: "var(--gradient-primary)" }}
+          >
+            Tablero <ExternalLink className="w-4 h-4" />
+          </a>
+        )}
         <button
           onClick={() => setOpen((v) => !v)}
           className="lg:hidden p-2 rounded-md hover:bg-muted"
@@ -1254,14 +1256,16 @@ function ConsultaSection() {
             >
               <Download className="w-4 h-4" /> Descargar resultados
             </button>
-            <a
-              href={DASHBOARD_URL}
-              target="_blank"
-              rel="noreferrer"
-              className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-primary/40 text-primary font-semibold hover:bg-primary/5 transition"
-            >
-              <ExternalLink className="w-4 h-4" /> Abrir tablero
-            </a>
+            {DASHBOARD_URL && (
+              <a
+                href={DASHBOARD_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg border border-primary/40 text-primary font-semibold hover:bg-primary/5 transition"
+              >
+                <ExternalLink className="w-4 h-4" /> Abrir tablero
+              </a>
+            )}
           </div>
 
           <div className="p-5 rounded-2xl bg-card border border-border">
@@ -1347,14 +1351,16 @@ function Cierre() {
           SEMILLA convierte datos abiertos en decisiones anticipadas para la resiliencia rural.
         </h2>
         <div className="mt-10 flex flex-wrap justify-center gap-3">
-          <a
-            href={DASHBOARD_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg bg-accent text-accent-foreground font-bold text-base shadow-lg hover:brightness-105 transition"
-          >
-            Ver tablero con mayor detalle <ExternalLink className="w-5 h-5" />
-          </a>
+          {DASHBOARD_URL && (
+            <a
+              href={DASHBOARD_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg bg-accent text-accent-foreground font-bold text-base shadow-lg hover:brightness-105 transition"
+            >
+              Ver tablero con mayor detalle <ExternalLink className="w-5 h-5" />
+            </a>
+          )}
           <a href="#demo" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white/10 border border-white/30 font-semibold hover:bg-white/20 transition">
             <Droplets className="w-4 h-4" /> Consultar municipios
           </a>
@@ -1400,11 +1406,13 @@ function Footer() {
             <li><a href="#metodologia" className="hover:underline">Metodología</a></li>
             <li><a href="#datos" className="hover:underline">Fuentes de datos</a></li>
             <li><a href="#demo" className="hover:underline">Consulta municipal</a></li>
-            <li>
-              <a href={DASHBOARD_URL} target="_blank" rel="noreferrer" className="hover:underline inline-flex items-center gap-1">
-                Tablero completo <ExternalLink className="w-3 h-3" />
-              </a>
-            </li>
+            {DASHBOARD_URL && (
+              <li>
+                <a href={DASHBOARD_URL} target="_blank" rel="noreferrer" className="hover:underline inline-flex items-center gap-1">
+                  Tablero completo <ExternalLink className="w-3 h-3" />
+                </a>
+              </li>
+            )}
           </ul>
         </div>
       </div>
