@@ -181,25 +181,31 @@ Permite priorizar municipios según la acumulación de factores de riesgo agrocl
 
 ### 9.2 Segmentación territorial
 
-El clustering identifica tres grandes segmentos de municipios:
+El clustering identifica cuatro perfiles territoriales de municipios:
 
-#### Segmento 1: Municipios cálidos en crisis — agua y alimentos en riesgo
+#### Clúster 1: Referente Estructural (354 municipios)
 
-Grupo con mayor vulnerabilidad acumulada. Presenta mayor inseguridad alimentaria, mayor riesgo asociado a calidad del agua, menor suficiencia vial y menor diversidad productiva.
+Grupo más grande, con clima templado, la seguridad alimentaria comparativamente mejor, buena calidad del agua y la mayor conectividad vial del país. Presenta el Z-score de NDVI más alto, es decir, municipios significativamente más verdes que sus vecinos.
 
-**Acción prioritaria:** intervenir en calidad del agua, seguridad alimentaria y conectividad vial.
+**Acción prioritaria:** mantener y proteger la cobertura vegetal, fortalecer mercados locales y usar este clúster como referente de buenas prácticas para las políticas públicas.
 
-#### Segmento 2: Municipios de montaña — ruralidad activa y mejor resiliencia
+#### Clúster 2: Vulnerabilidad Crítica (207 municipios)
 
-Grupo con alta ruralidad, mejor conectividad relativa y mayor diversidad productiva. Aunque mantiene riesgos, cuenta con una mejor base estructural para fortalecer resiliencia.
+Grupo con clima cálido, la inseguridad alimentaria más alta del país, la conectividad vial más baja y la menor diversidad de cultivos. La combinación de pobreza, aislamiento y dependencia agrícola lo hace extremadamente susceptible a choques climáticos.
 
-**Acción prioritaria:** fortalecer economía rural, diversificación agrícola y calidad del agua de forma preventiva.
+**Acción prioritaria:** intervención urgente en seguridad alimentaria, diversificación productiva e infraestructura vial. Es el clúster de mayor prioridad.
 
-#### Segmento 3: Municipios de transición — menor riesgo urbano-rural
+#### Clúster 3: Riesgo Hídrico Crítico (287 municipios)
 
-Grupo con menor KPI relativo, menor población rural y mejores condiciones en algunos indicadores. Puede funcionar como escenario para pilotos de intervención.
+Grupo con buena conectividad y la mayor diversidad agrícola, pero con el índice de riesgo de calidad del agua (IRCA) más alto del país, crítico para la salud y la nutrición.
 
-**Acción prioritaria:** mantener calidad del agua, promover proyectos urbano-rurales y evitar deterioro ambiental.
+**Acción prioritaria:** intervención inmediata en calidad del agua (tratamiento, monitoreo, infraestructura hídrica), aprovechando la diversidad agrícola para planes de seguridad alimentaria con enfoque sanitario.
+
+#### Clúster 4: Degradación Ecológica (273 municipios)
+
+Grupo con mayor componente urbano y clima cálido, pero con el NDVI y el Z-score de NDVI más bajos del país, indicando degradación ambiental significativa que afecta la productividad y la resiliencia territorial.
+
+**Acción prioritaria:** restauración ecológica y manejo sostenible del suelo, mejora de la conectividad vial y atención a la inseguridad alimentaria.
 
 ### 9.3 Página web de consulta
 
@@ -256,3 +262,7 @@ semilla-territorial/
 
 ---
 *Para documentación técnica de desarrollo (stack, ejecución local, configuración de variables de entorno), ver [README_TECNICO.md](./README_TECNICO.md).*
+
+*Repositorio del componente predictivo (ST-GNN, S2SLS, pipeline de datos y CI/CD): [https://gitlab.com/jaimescastrodf-group/semilla-fork](https://gitlab.com/jaimescastrodf-group/semilla-fork)*
+
+*Repositorio del componente predictivo (ST-GNN, S2SLS, pipeline de datos y CI/CD): [https://gitlab.com/jaimescastrodf-group/semilla-fork](https://gitlab.com/jaimescastrodf-group/semilla-fork)*
