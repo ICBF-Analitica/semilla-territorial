@@ -733,6 +733,7 @@ function KpiSection() {
     { l: "Suficiencia de vías", v: activeMun.suficiencia_vias.toFixed(2) },
     { l: "Temperatura media", v: `${activeMun.temperatura.toFixed(1)} °C` },
     { l: "NDVI", v: activeMun.ndvi.toFixed(3) },
+    { l: "Z-score NDVI (vs. vecinos)", v: activeMun.zscore_ndvi.toFixed(2) },
     { l: "Población rural", v: pct(activeMun.poblacion_rural) },
     { l: "Tipos de cultivos", v: activeMun.cultivos },
   ];
