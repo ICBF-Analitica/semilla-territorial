@@ -999,7 +999,6 @@ function ClustersSection() {
       subtitle="El clustering territorial identifica cuatro grupos de municipios con combinaciones diferenciadas de clima, conectividad, seguridad alimentaria, calidad del agua, ruralidad y cobertura vegetal relativa. Esta segmentación permite orientar intervenciones públicas más precisas según el perfil de riesgo predominante."
       className="bg-muted/40"
     >
-
       <div className="grid md:grid-cols-2 gap-5">
         {segments.map((s, i) => (
           <div
