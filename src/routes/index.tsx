@@ -1090,7 +1090,7 @@ function IASection() {
       icon: Network,
       tag: "Modelo espacio-temporal profundo",
       t: "ST-GNN",
-      d: "Detecta tendencias, no solo números. Anticipa hacia dónde se dirige una crisis de desnutrición o vulnerabilidad alimentaria, en lugar de entregar únicamente un valor puntual. Permite aprender patrones espacio-temporales entre municipios y señales climáticas, vegetacionales y sociales.",
+      d: "Detecta tendencias, no solo números. Permite aprender patrones espacio-temporales entre municipios y señales de vegetación.",
     },
     {
       icon: Activity,
