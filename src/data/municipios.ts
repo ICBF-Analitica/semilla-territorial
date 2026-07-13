@@ -12,6 +12,7 @@ export type Municipio = {
   temperatura: number;
   ndvi: number;
   poblacion_rural: number; // fracción 0-1
+  zscore_ndvi: number;
   kpi: number;
   kpi_quintile: string;
   cluster: number;
@@ -46,6 +47,7 @@ function parse(): Municipio[] {
       temperatura: parseNum(col(r, "temperature_2m_mean_c")),
       ndvi: parseNum(col(r, "NDVI")),
       poblacion_rural: parseNum(col(r, "Pob rural")),
+      zscore_ndvi: parseNum(col(r, "Zscore_NDVI")),
       kpi: parseNum(col(r, "KPI")),
       kpi_quintile: (col(r, "KPI_Quintile") || "").trim(),
       cluster: parseNum(col(r, "Cluster")),
