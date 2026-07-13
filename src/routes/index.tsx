@@ -27,6 +27,7 @@ import {
   Wheat,
   Thermometer,
   Droplets,
+  Scale,
 } from "lucide-react";
 import {
   ResponsiveContainer,
@@ -412,6 +413,13 @@ function DatosAbiertos() {
       short: "Variable climática crítica",
       title: "Temperatura",
       body: "La temperatura influye directamente en la productividad agrícola, la disponibilidad hídrica y la ocurrencia de eventos extremos. Aumentos sostenidos pueden reducir rendimientos, afectar cultivos estratégicos y generar estrés hídrico que impacta los medios de vida rurales.",
+    },
+    {
+      emoji: "📊",
+      icon: Scale,
+      short: "Medida relativa de cobertura vegetal",
+      title: "Z-score NDVI",
+      body: "Mide qué tan verde se encuentra un municipio en comparación con sus vecinos. Valores altos indican un desempeño ecológico relativo mejor que el entorno; valores bajos sugieren degradación o menor cobertura vegetal respecto al vecindario. Permite identificar territorios que, aunque no parezcan críticos en valor absoluto, están significativamente peor que su entorno inmediato.",
     },
   ];
 
