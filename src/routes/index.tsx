@@ -491,7 +491,7 @@ function DatosAbiertos() {
           Variables clave para entender el riesgo territorial
         </h3>
         <p className="mt-3 text-muted-foreground max-w-3xl">
-          Seis dimensiones se combinan para explicar dónde y por qué un territorio puede transitar
+          Siete dimensiones se combinan para explicar dónde y por qué un territorio puede transitar
           de un choque climático a una crisis alimentaria.
         </p>
 
@@ -999,15 +999,6 @@ function ClustersSection() {
       subtitle="El clustering territorial identifica cuatro grupos de municipios con combinaciones diferenciadas de clima, conectividad, seguridad alimentaria, calidad del agua, ruralidad y cobertura vegetal relativa. Esta segmentación permite orientar intervenciones públicas más precisas según el perfil de riesgo predominante."
       className="bg-muted/40"
     >
-      <div
-        className="mb-6 p-4 rounded-xl border border-border bg-card text-sm text-muted-foreground"
-        role="note"
-      >
-        <span className="font-semibold text-foreground">Z-score NDVI:</span>{" "}
-        mide qué tan verde se encuentra un municipio en comparación con sus vecinos.
-        Valores altos indican un desempeño ecológico relativo mejor que el entorno;
-        valores bajos sugieren degradación o menor cobertura vegetal respecto al vecindario.
-      </div>
 
       <div className="grid md:grid-cols-2 gap-5">
         {segments.map((s, i) => (
