@@ -733,6 +733,7 @@ function KpiSection() {
     { l: "Suficiencia de vías", v: activeMun.suficiencia_vias.toFixed(2) },
     { l: "Temperatura media", v: `${activeMun.temperatura.toFixed(1)} °C` },
     { l: "NDVI", v: activeMun.ndvi.toFixed(3) },
+    { l: "Z-score NDVI (vs. vecinos)", v: activeMun.zscore_ndvi.toFixed(2) },
     { l: "Población rural", v: pct(activeMun.poblacion_rural) },
     { l: "Tipos de cultivos", v: activeMun.cultivos },
   ];
@@ -885,58 +886,100 @@ function KpiSection() {
 function ClustersSection() {
   const segments = [
     {
-      accent: "var(--chart-4)",
-      accentSoft: "color-mix(in oklab, var(--chart-4) 12%, var(--card))",
-      tono: "Alta prioridad",
-      titulo: "Municipios cálidos en crisis: agua y alimentos en riesgo",
+      accent: "#2563eb",
+      accentSoft: "color-mix(in oklab, #2563eb 10%, var(--card))",
+      badge: "🟦",
+      tono: "Referente estructural",
+      titulo:
+        "Municipios de clima templado, bien conectados y con baja inseguridad alimentaria",
       rows: [
-        ["🏷️ Clima", "Cálido (25°C promedio)"],
-        ["🍽️ Inseguridad alimentaria grave", "39% (la más alta)"],
-        ["💧 IRCA (riesgo del agua)", "15.4 (riesgo muy alto)"],
-        ["🛣️ Suficiencia de vías", "9.2 (la más baja)"],
-        ["🌾 Diversidad de cultivos", "5.0 (la más baja)"],
-        ["👨‍🌾 Población rural", "57%"],
-        ["📊 KPI (prioridad)", "2.61 (máxima)"],
-        ["🏘️ Municipios", "363"],
+        ["🏷️ Clima", "Templado (17.6°C)"],
+        ["🍽️ Inseguridad alimentaria grave", "20% (la más baja)"],
+        ["💧 IRCA (riesgo del agua)", "7.5 (riesgo bajo-medio)"],
+        ["🛣️ Suficiencia de vías", "19.4 (la más alta)"],
+        ["🌾 Diversidad de cultivos", "5.3 (intermedia)"],
+        ["👨‍🌾 Población rural", "44% (baja-media)"],
+        ["🌿 NDVI", "0.69"],
+        ["📊 Z-score NDVI", "1.28 (el más alto → verdor muy superior al vecindario)"],
+        ["📊 KPI (prioridad)", "2.24 (la más baja)"],
+        ["🏘️ Municipios", "354 (grupo más grande)"],
       ],
+      perfil:
+        "Municipios de clima templado, con la mejor conectividad vial, baja inseguridad alimentaria y un verdor relativo destacado frente a sus vecinos. Son territorios con buenas condiciones estructurales.",
       accion:
-        "Urge intervenir en calidad del agua, seguridad alimentaria y conectividad vial. Es el grupo con mayor vulnerabilidad acumulada.",
+        "Mantener y proteger la cobertura vegetal, fortalecer mercados locales y usar este clúster como referente de buenas prácticas.",
     },
     {
-      accent: "var(--primary)",
-      accentSoft: "color-mix(in oklab, var(--primary) 10%, var(--card))",
-      tono: "Base estructural sólida",
-      titulo: "Municipios de montaña: ruralidad activa y mejor resiliencia",
+      accent: "#dc2626",
+      accentSoft: "color-mix(in oklab, #dc2626 10%, var(--card))",
+      badge: "🟥",
+      tono: "Vulnerabilidad crítica",
+      titulo:
+        "Municipios cálidos, con alta ruralidad y muy alta inseguridad alimentaria",
       rows: [
-        ["🏷️ Clima", "Templado-frío (16°C promedio)"],
-        ["🍽️ Inseguridad alimentaria grave", "22% (la más baja)"],
-        ["💧 IRCA (riesgo del agua)", "8.0 (riesgo medio)"],
-        ["🛣️ Suficiencia de vías", "20.0 (la más alta)"],
-        ["🌾 Diversidad de cultivos", "5.5 (la más alta)"],
-        ["👨‍🌾 Población rural", "67% (la más alta)"],
-        ["📊 KPI (prioridad)", "2.34 (intermedia)"],
-        ["🏘️ Municipios", "438 (grupo más grande)"],
+        ["🏷️ Clima", "Cálido (23.7°C)"],
+        ["🍽️ Inseguridad alimentaria grave", "40% (la más alta)"],
+        ["💧 IRCA (riesgo del agua)", "5.6 (el más bajo)"],
+        ["🛣️ Suficiencia de vías", "9.9 (la más baja)"],
+        ["🌾 Diversidad de cultivos", "4.0 (la más baja)"],
+        ["👨‍🌾 Población rural", "69% (alta)"],
+        ["🌿 NDVI", "0.71"],
+        ["📊 Z-score NDVI", "0.81 (verdor ligeramente superior al vecindario)"],
+        ["📊 KPI (prioridad)", "2.70 (muy alta)"],
+        ["🏘️ Municipios", "207"],
       ],
+      perfil:
+        "Municipios cálidos, con alta dependencia rural, muy baja diversificación agrícola y la peor conectividad vial. Aunque el agua es de menor riesgo, la inseguridad alimentaria es crítica. El verdor es bueno pero no excepcional frente a su entorno.",
       accion:
-        "Fortalecer la economía rural, mantener la diversificación agrícola y mejorar la calidad del agua de forma preventiva. Es el grupo con mejor base estructural.",
+        "Intervención urgente en seguridad alimentaria, diversificación productiva e infraestructura vial. Es el clúster con mayor vulnerabilidad social y logística.",
     },
     {
-      accent: "var(--chart-3)",
-      accentSoft: "color-mix(in oklab, var(--chart-3) 14%, var(--card))",
-      tono: "Piloto y sostenimiento",
-      titulo: "Municipios de transición: menor riesgo urbano-rural",
+      accent: "#7c3aed",
+      accentSoft: "color-mix(in oklab, #7c3aed 10%, var(--card))",
+      badge: "🟪",
+      tono: "Riesgo hídrico crítico",
+      titulo:
+        "Municipios de clima templado, con alta ruralidad y agua de muy alto riesgo",
       rows: [
-        ["🏷️ Clima", "Intermedio (21°C promedio)"],
-        ["🍽️ Inseguridad alimentaria grave", "25% (moderada)"],
-        ["💧 IRCA (riesgo del agua)", "5.2 (el más bajo)"],
-        ["🛣️ Suficiencia de vías", "14.2 (intermedio)"],
-        ["🌾 Diversidad de cultivos", "5.4 (intermedio)"],
-        ["👨‍🌾 Población rural", "34% (la más baja)"],
-        ["📊 KPI (prioridad)", "2.16 (la más baja)"],
-        ["🏘️ Municipios", "320"],
+        ["🏷️ Clima", "Templado (17.6°C)"],
+        ["🍽️ Inseguridad alimentaria grave", "26% (media-baja)"],
+        ["💧 IRCA (riesgo del agua)", "15.3 (el más alto → riesgo muy elevado)"],
+        ["🛣️ Suficiencia de vías", "16.5 (alta)"],
+        ["🌾 Diversidad de cultivos", "5.9 (la más alta)"],
+        ["👨‍🌾 Población rural", "70% (la más alta)"],
+        ["🌿 NDVI", "0.71"],
+        ["📊 Z-score NDVI", "0.82 (verdor ligeramente superior al vecindario)"],
+        ["📊 KPI (prioridad)", "2.70 (muy alta, igual al Clúster 2)"],
+        ["🏘️ Municipios", "287"],
       ],
+      perfil:
+        "Municipios de clima templado, con la mayor ruralidad y la mayor diversidad de cultivos, pero con un IRCA extremadamente alto (el agua es un riesgo serio para la salud). Tienen buena conectividad y vegetación, pero el problema hídrico es crítico.",
       accion:
-        "Mantener la calidad del agua, promover proyectos urbanos-rurales y evitar el deterioro ambiental asociado a menor NDVI. Es el grupo con mejor posición relativa, ideal para acciones piloto.",
+        "Intervención inmediata en calidad del agua (tratamiento, monitoreo, infraestructura hídrica). Aprovechar la diversidad agrícola para planes de seguridad alimentaria con enfoque de riesgos sanitarios.",
+    },
+    {
+      accent: "#16a34a",
+      accentSoft: "color-mix(in oklab, #16a34a 10%, var(--card))",
+      badge: "🟩",
+      tono: "Degradación ecológica",
+      titulo:
+        "Municipios cálidos, urbanizados, con baja cobertura vegetal relativa",
+      rows: [
+        ["🏷️ Clima", "Cálido (24.0°C)"],
+        ["🍽️ Inseguridad alimentaria grave", "35% (alta)"],
+        ["💧 IRCA (riesgo del agua)", "9.4 (riesgo medio)"],
+        ["🛣️ Suficiencia de vías", "11.0 (baja)"],
+        ["🌾 Diversidad de cultivos", "5.8 (alta)"],
+        ["👨‍🌾 Población rural", "42% (la más baja)"],
+        ["🌿 NDVI", "0.64 (el más bajo)"],
+        ["📊 Z-score NDVI", "0.43 (el más bajo → verdor inferior al vecindario)"],
+        ["📊 KPI (prioridad)", "2.56 (media-alta)"],
+        ["🏘️ Municipios", "273"],
+      ],
+      perfil:
+        "Municipios cálidos, con baja población rural (mayor componente urbano), alta diversidad de cultivos pero baja conectividad vial. Su principal rasgo diferencial es el NDVI más bajo y un Z-score muy bajo, lo que indica que estos municipios están significativamente más degradados o deforestados que su entorno.",
+      accion:
+        "Restauración ecológica y manejo sostenible del suelo (reforestación, control de erosión, agricultura regenerativa). Además, mejorar la conectividad vial y atender la inseguridad alimentaria alta.",
     },
   ];
 
@@ -944,11 +987,21 @@ function ClustersSection() {
     <Section
       id="clusters"
       eyebrow="Clustering territorial"
-      title="Perfiles municipales diferenciados"
-      subtitle="SEMILLA identifica perfiles territoriales para diseñar intervenciones a la medida de cada contexto rural."
+      title="Cuatro clústeres municipales diferenciados"
+      subtitle="El clustering territorial identifica cuatro grupos de municipios con combinaciones diferenciadas de clima, conectividad, seguridad alimentaria, calidad del agua, ruralidad y cobertura vegetal relativa. Esta segmentación permite orientar intervenciones públicas más precisas según el perfil de riesgo predominante."
       className="bg-muted/40"
     >
-      <div className="grid lg:grid-cols-3 gap-5">
+      <div
+        className="mb-6 p-4 rounded-xl border border-border bg-card text-sm text-muted-foreground"
+        role="note"
+      >
+        <span className="font-semibold text-foreground">Z-score NDVI:</span>{" "}
+        mide qué tan verde se encuentra un municipio en comparación con sus vecinos.
+        Valores altos indican un desempeño ecológico relativo mejor que el entorno;
+        valores bajos sugieren degradación o menor cobertura vegetal respecto al vecindario.
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-5">
         {segments.map((s, i) => (
           <div
             key={i}
@@ -963,7 +1016,7 @@ function ClustersSection() {
                   className="w-2.5 h-2.5 rounded-full"
                   style={{ background: s.accent }}
                 />
-                Segmento {i + 1} · {s.tono}
+                <span>{s.badge} Clúster {i + 1} · {s.tono}</span>
               </div>
               <div className="mt-2 font-bold text-base leading-snug">{s.titulo}</div>
             </div>
@@ -976,6 +1029,12 @@ function ClustersSection() {
                   </li>
                 ))}
               </ul>
+              <div className="p-3 rounded-lg text-sm bg-muted/50">
+                <div className="text-[11px] font-bold uppercase tracking-wider mb-1 text-muted-foreground">
+                  Perfil
+                </div>
+                {s.perfil}
+              </div>
               <div
                 className="p-3 rounded-lg text-sm"
                 style={{
@@ -995,7 +1054,10 @@ function ClustersSection() {
 
       <div className="mt-8 grid lg:grid-cols-2 gap-6">
         <div className="p-6 rounded-2xl bg-card border border-border">
-          <div className="font-bold mb-4">Mapa perceptual</div>
+          <div className="font-bold mb-1">Mapa perceptual</div>
+          <div className="text-xs text-muted-foreground mb-4">
+            Proyección de los cuatro clústeres municipales
+          </div>
           <img
             src={perceptualImg}
             alt="Mapa perceptual de municipios por clusters"
@@ -1007,7 +1069,7 @@ function ClustersSection() {
         <div className="p-6 rounded-2xl bg-card border border-border">
           <div className="font-bold mb-1">Dendrograma</div>
           <div className="text-xs text-muted-foreground mb-4">
-            Agrupamiento jerárquico exploratorio
+            Agrupamiento jerárquico exploratorio con corte en cuatro clústeres
           </div>
           <img
             src={dendroImg}
