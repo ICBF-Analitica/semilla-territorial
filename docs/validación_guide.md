@@ -18,7 +18,7 @@ Esta guía establece las rutas exactas para que un evaluador verifique el origen
 
 ## 3. ¿Quieres verificar el componente predictivo (ST-GNN y S2SLS)?
 
-Para validar el Pearson de Uribia (~0.567) en la tarea de desnutrición, y la comparación contra el baseline S2SLS:
+Para validar el Pearson de Uribia (~0.567) en inseguridad alimentaria, y la comparación contra el baseline S2SLS:
 
 *   **Lee:** `docs/conclusiones.md` (sección de resultados del componente predictivo) y `docs/architecture/cambios_modelo_stgnn_4.md`.
 *   **Lee también:** `docs/auditorias/CORRECCION_BASELINE_S2SLS.md` para el desglose metodológico del S2SLS.
