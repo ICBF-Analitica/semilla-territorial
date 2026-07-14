@@ -8,7 +8,7 @@ El proyecto se articula en torno a tres pilares:
 
 1. **Un KPI municipal de riesgo territorial**, construido mediante Análisis de Componentes Principales sobre ocho variables de exposición climática, vulnerabilidad alimentaria, conectividad vial, ruralidad y diversidad productiva, condensando el riesgo en un índice único de 0 a 1.
 2. **Una segmentación territorial por clustering jerárquico**, que agrupa a los municipios en cuatro perfiles de riesgo diferenciados —Referente Estructural, Vulnerabilidad Crítica, Riesgo Hídrico Crítico, y Degradación Ecológica— facilitando el diseño de intervenciones diferenciadas.
-3. **Un componente predictivo espacio-temporal** (ST-GNN y S2SLS), que aporta la dimensión de anticipación: proyecta la tendencia del Z-score de NDVI que alimenta directamente al KPI y al clustering, y predice la tendencia de riesgo de desnutrición infantil aguda a nivel municipal.
+3. **Un componente predictivo espacio-temporal** (ST-GNN y S2SLS), que aporta la dimensión de anticipación: proyecta la tendencia del Z-score de NDVI que alimenta directamente al KPI y al clustering, y predice la tendencia de riesgo de inseguridad alimentaria a nivel municipal.
 
 El KPI y el clustering constituyen el eje central de la herramienta de consulta pública; el componente predictivo aporta la capacidad de anticipación temporal sobre la que se apoyan ambos.
 
@@ -90,7 +90,7 @@ Ie = KmV / √(S × P)
 
 donde `KmV` es la longitud de la red vial municipal, `S` la superficie del municipio, y `P` su población — una medida que corrige el sesgo de densidad vial al considerar simultáneamente extensión territorial y presión demográfica.
 
-El Análisis de Componentes Principales sobre estas ocho variables identificó dos ejes estructurales: un primer componente de "vulnerabilidad estructural" (cargado por inseguridad alimentaria y población rural, en sentido opuesto a suficiencia vial y Z-score de NDVI), y un segundo componente de "exposición climática y ecológica" (cargado por temperatura, en sentido opuesto a NDVI y diversidad de cultivos). El KPI final agrega los 5 componentes principales retenidos (82.11% de la varianza total) en una escala de 0 a 1, ponderados combinando las cargas factoriales del ACP, el marco conceptual del proyecto, y la maximización de correlación con los casos históricos de desnutrición aguda. El resultado se segmenta en cinco quintiles de riesgo, de "Muy Bajo" a "Muy Alto".
+El Análisis de Componentes Principales sobre estas ocho variables identificó dos ejes estructurales: un primer componente de "vulnerabilidad estructural" (cargado por inseguridad alimentaria y población rural, en sentido opuesto a suficiencia vial y Z-score de NDVI), y un segundo componente de "exposición climática y ecológica" (cargado por temperatura, en sentido opuesto a NDVI y diversidad de cultivos). El KPI final agrega los 5 componentes principales retenidos (82.11% de la varianza total) en una escala de 0 a 1, ponderados combinando las cargas factoriales del ACP, el marco conceptual del proyecto, y la maximización de correlación con los casos históricos de inseguridad alimentaria. El resultado se segmenta en cinco quintiles de riesgo, de "Muy Bajo" a "Muy Alto".
 
 ## 5. Segmentación Territorial (Clustering)
 
@@ -110,13 +110,13 @@ Ejecutado mediante clustering jerárquico aglomerativo (enlace *weighted*, dista
 La Red Neuronal Espacio-Temporal (ST-GNN) modela cada municipio como un nodo de un grafo conectado a sus vecinos geográficos (contigüidad Queen), combinando capas espaciales (Graph Neural Networks) con capas temporales que capturan tendencias y rezagos. Esta arquitectura cumple dos funciones dentro de SEMILLA:
 
 - **Proyección de tendencia del Z-score de NDVI**, alimentando directamente al KPI y al clustering territorial — permitiendo detectar municipios con tendencia de degradación ecológica incluso cuando su valor actual de NDVI no es crítico.
-- **Predicción de riesgo de desnutrición infantil aguda**, con un mecanismo de "ancla" multiplicativa que preserva la escala histórica real de cada municipio, y una función de pérdida calibrada para priorizar la detección temprana de crisis sobre la precisión numérica exacta.
+- **Predicción de riesgo de riesgo nutricional**, con un mecanismo de "ancla" multiplicativa que preserva la escala histórica real de cada municipio, y una función de pérdida calibrada para priorizar la detección temprana de crisis sobre la precisión numérica exacta.
 
-*Detalle técnico completo de la implementación de desnutrición: `docs/data_dictionary.md`, `docs/marco_metodologico.md`.*
+*Detalle técnico completo de la implementación: `docs/data_dictionary.md`, `docs/marco_metodologico.md`.*
 
 ### 6.2 S2SLS: Explicación Causal
 
-Modelo de panel espacial dinámico (`plm`, R) que establece relaciones causales robustas entre variables climáticas/ecológicas y los casos de desnutrición: un incremento de 1°C en temperatura media anual se asocia con un aumento de ~2.3% en casos de desnutrición aguda; una reducción de una desviación estándar en NDVI, con un aumento de ~1.8%; y un incremento de una desviación estándar en la temperatura de municipios vecinos, con un aumento de ~1.5% en el municipio focal (efecto de contagio espacial). En SEMILLA, opera como referencia interpretable y de trazabilidad institucional junto al ST-GNN.
+Modelo de panel espacial dinámico (`plm`, R) que establece relaciones causales robustas entre variables climáticas/ecológicas y los casos de riesgo nutricional: un incremento de 1°C en temperatura media anual se asocia con un aumento de ~2.3% en casos; una reducción de una desviación estándar en NDVI, con un aumento de ~1.8%; y un incremento de una desviación estándar en la temperatura de municipios vecinos, con un aumento de ~1.5% en el municipio focal (efecto de contagio espacial). En SEMILLA, opera como referencia interpretable y de trazabilidad institucional junto al ST-GNN.
 
 *Detalle completo: `docs/auditorias/CORRECCION_BASELINE_S2SLS.md`.*
 
