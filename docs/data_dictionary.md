@@ -81,7 +81,7 @@ Documentadas a partir de la inspección directa del código en `src/models/s2sls
 
 | Nombre Variable | Definición | Unidad | Fuente | Tipo | Origen en Código |
 |-----------------|------------|--------|--------|------|------------------|
-| `cantidad` | Casos de desnutrición aguda registrados por municipio y periodo. Variable objetivo (target). | Conteo (N) | Desnutrición | Cruda | `pipeline_integration.py:45,48`, `spml_s2sls.R:109-111,113` |
+| `cantidad` | Casos de inseguridad alimentaria registrados por municipio y periodo. Variable objetivo (target). | Conteo (N) | Desnutrición | Cruda | `pipeline_integration.py:45,48`, `spml_s2sls.R:109-111,113` |
 | `temperature_2m_mean_c` | Temperatura media mensual a 2 metros de altura sobre la superficie. | Grados Celsius (°C) | Clima | Cruda | `pipeline_integration.py:44`, `spml_s2sls.R:127` |
 | `precipitation_sum_mm` | Suma de precipitación total mensual. | Milímetros (mm) | Clima | Cruda | `pipeline_integration.py:44`, `spml_s2sls.R:126` |
 | `ndvi_mean` | Índice de Vegetación de Diferencia Normalizada (promedio mensual). | Índice [-1, 1] | Teledetección | Cruda | `pipeline_integration.py:43`, `spml_s2sls.R:128` |
