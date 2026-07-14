@@ -118,7 +118,7 @@ export const fuentes = [
   { fuente: "UPRA", variable: "Producción y uso agrícola", uso: "Diversidad de cultivos y aptitud productiva" },
   { fuente: "IGAC", variable: "Uso del suelo y capas territoriales", uso: "Contexto biofísico y coberturas" },
   { fuente: "DANE", variable: "Ruralidad, población, inseguridad alimentaria", uso: "Vulnerabilidad social y demografía" },
-  { fuente: "MinSalud / ICBF", variable: "Salud y nutrición", uso: "Indicadores de deterioro nutricional" },
+  { fuente: "MinSalud", variable: "Salud y nutrición", uso: "Indicadores de deterioro nutricional" },
   { fuente: "Open-Meteo", variable: "Temperatura, precipitación", uso: "Exposición climática municipal" },
   { fuente: "Sentinel-2 / GEE", variable: "NDVI, vigor vegetal", uso: "Estrés vegetal por teledetección" },
   { fuente: "OpenStreetMap", variable: "Red vial y accesibilidad", uso: "Suficiencia de conectividad rural" },
