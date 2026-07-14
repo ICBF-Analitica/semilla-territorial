@@ -365,7 +365,7 @@ function DatosAbiertos() {
     { icon: Sprout, name: "Producción agrícola y cultivos", src: "UPRA" },
     { icon: Layers, name: "Uso del suelo y capas territoriales", src: "UPRA · IGAC" },
     { icon: Users, name: "Población, ruralidad e inseguridad alimentaria", src: "DANE" },
-    { icon: HeartPulse, name: "Salud y nutrición", src: "MinSalud · ICBF" },
+    { icon: HeartPulse, name: "Salud y nutrición", src: "MinSalud\u00a0" },
     { icon: Cloud, name: "Clima (temperatura y precipitación)", src: "Open-Meteo" },
     { icon: Satellite, name: "Vegetación satelital (NDVI)", src: "Sentinel-2 · GEE" },
     { icon: RouteIcon, name: "Vías y accesibilidad", src: "OpenStreetMap" },
