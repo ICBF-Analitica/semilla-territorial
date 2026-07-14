@@ -93,12 +93,5 @@ El siguiente cruce compara las fuentes mencionadas en la documentación instituc
 | UPRA, DANE, IGAC, OSM | **No evidenciado en script de R/Python** | El notebook asume un preprocesamiento externo que ya las incluye en la base municipal consolidada (Línea 219, referida en el código inspeccionado como `consolidado.xlsx` — la versión de salida vigente es `municipios_semilla.csv`). |
 | ST-GNN (componente predictivo, GitLab) | `Zscore_NDVI` | Confirmado como columna presente en `municipios_semilla.csv`; no se identificó en esta extracción el punto exacto del notebook donde se incorpora este valor al conjunto de variables base. |
 
-## 5. Elementos No Determinados por el Código Disponible
-
-Durante la extracción, se identificaron los siguientes vacíos metodológicos que no pueden responderse usando únicamente el código de `Avanzado_ia/` inspeccionado hasta ahora:
-
-1. **Preprocesamiento de la base municipal consolidada:** no se identificaron los scripts de ETL que generan el archivo base consumido por el modelo de PCA — por ejemplo, cómo se calculó o cruzó geométricamente la "Suficiencia de vías" de OSM, o cómo se depuró la "Estimación Inseguridad Alimentaria Moderada-Grave" del DANE a nivel municipal.
-2. **Actualización del número de clústeres:** el código inspeccionado fija `num_clusters = 3` (línea 242), mientras que la salida vigente refleja 4 clústeres — pendiente de reconfirmar contra la versión actual del notebook.
-3. **Incorporación de `Zscore_NDVI`:** no se identificó en el código inspeccionado el paso donde esta variable, proveniente del componente predictivo, se agrega al conjunto de variables base del KPI.
 
 Las etiquetas semánticas de los clústeres (Sección 3) ya están disponibles y confirmadas a través del Reporte Final institucional, su asignación es una interpretación de negocio aplicada *a posteriori* de la ejecución del análisis, el paso habitual en cualquier ejercicio de clustering.
