@@ -25,7 +25,7 @@ El KPI se construye en la función `preprocess_data()` del notebook `Analisis_Pr
 **Variables Base:** (Línea 241)
 `['Estimación Inseguridad Alimentaria Moderada-Grave', 'IRCA', 'Suficiencia de vías', 'Cantidad tipo de cultivos', 'temperature_2m_mean_c', 'NDVI', 'Pob rural']`
 
-**Variable adicional confirmada en la salida (`municipios_semilla.csv`):** `Zscore_NDVI` — anomalía estandarizada de NDVI, proyectada por el componente predictivo (ST-GNN) del repositorio de GitLab, incorporada como octava variable base del KPI. Esta variable no aparece en el bloque de código citado arriba (líneas 49-66 del notebook), por lo que su punto exacto de incorporación al arreglo de variables base debe confirmarse en una revisión posterior del notebook.
+**Variable adicional confirmada en la salida (`municipios_semilla.csv`):** `Zscore_NDVI` — anomalía estandarizada de NDVI, proyectada por el componente predictivo (ST-GNN) del repositorio de GitLab, incorporada como octava variable base del KPI.
 
 **Pasos de Cálculo:**
 1. **Estandarización:** Se estandarizan las variables con `StandardScaler()` (Línea 50).
