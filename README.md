@@ -265,4 +265,3 @@ semilla-territorial/
 
 *Repositorio del componente predictivo (ST-GNN, S2SLS, pipeline de datos y CI/CD): [https://gitlab.com/jaimescastrodf-group/semilla-fork](https://gitlab.com/jaimescastrodf-group/semilla-fork)*
 
-*Repositorio del componente predictivo (ST-GNN, S2SLS, pipeline de datos y CI/CD): [https://gitlab.com/jaimescastrodf-group/semilla-fork](https://gitlab.com/jaimescastrodf-group/semilla-fork)*
