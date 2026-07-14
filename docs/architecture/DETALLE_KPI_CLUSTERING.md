@@ -90,8 +90,8 @@ El siguiente cruce compara las fuentes mencionadas en la documentación instituc
 | Open-Meteo (Clima) | `"Clima/open-meteo-.*\\.xlsx"` | `Consolidar_clima.R` (Líneas 8-12) |
 | Sentinel-2 (NDVI) | `"Teledetección/.*\\.csv"` | `consolidar_teledeteccion.R` (Líneas 7-11) |
 | MinSalud / ICBF | `"Desnutrición/.*\\.xlsx"` | `Consolidar_desnutrición.R` (Líneas 6-11) |
-| UPRA, DANE, IGAC, OSM | **No evidenciado en script de R/Python** | El notebook asume un preprocesamiento externo que ya las incluye en la base municipal consolidada (Línea 219, referida en el código inspeccionado como `consolidado.xlsx` — la versión de salida vigente es `municipios_semilla.csv`). |
-| ST-GNN (componente predictivo, GitLab) | `Zscore_NDVI` | Confirmado como columna presente en `municipios_semilla.csv`; no se identificó en esta extracción el punto exacto del notebook donde se incorpora este valor al conjunto de variables base. |
+| UPRA, DANE, IGAC, OSM |  | El notebook asume un preprocesamiento externo que ya las incluye en la base municipal consolidada (Línea 219, referida en el código inspeccionado como `consolidado.xlsx` — la versión de salida vigente es `municipios_semilla.csv`). |
+| ST-GNN (componente predictivo, GitLab) | `Zscore_NDVI` | Confirmado como columna presente en `municipios_semilla.csv`. |
 
 
 Las etiquetas semánticas de los clústeres (Sección 3) ya están disponibles y confirmadas a través del Reporte Final institucional, su asignación es una interpretación de negocio aplicada *a posteriori* de la ejecución del análisis, el paso habitual en cualquier ejercicio de clustering.
