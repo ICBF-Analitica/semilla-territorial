@@ -41,7 +41,7 @@ Extraídas directamente de los scripts de orquestación (`src/data/pipeline_inte
 - **Ruta del archivo:** `data/01_raw/Desnutricion/desnutricion_mensual_consolidado.csv`
 - **Variables contenidas:** Conteos mensuales de desnutrición (`cantidad` / `casos_desnutricion`).
 - **Periodicidad:** Mensual.
-- **Origen Institucional:** ICBF (Instituto Colombiano de Bienestar Familiar).
+- **Origen Institucional:** INS.
 - **Origen en el código:** `pipeline_integration.py` (Línea 22), `spml_s2sls.R` (Línea 52).
 
 ### 2.3 Teledetección
