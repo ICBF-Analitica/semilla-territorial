@@ -247,6 +247,8 @@ El repositorio combina una aplicación web de consulta con insumos de análisis 
 semilla-territorial/
 ├── .lovable/                  # Configuración del proyecto en Lovable
 ├── Avanzado_ia/               # Insumos, datos, consultas y notebooks de análisis avanzado
+├── RECURSOS/                  # Informe final y presentación
+├── docs/                      # Documentación proceso
 ├── public/                    # Recursos públicos de la aplicación
 ├── src/                       # Código fuente de la aplicación web
 │   ├── data/                  # Datos utilizados por la página web
