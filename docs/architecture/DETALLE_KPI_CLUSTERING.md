@@ -60,14 +60,6 @@ El algoritmo agrupa los municipios basándose **exclusivamente en sus puntuacion
 # ... find_best_clustering(pca_data, num_clusters)
 ```
 
-**Selección del Número de Clusters:**
-> **Nota de reconciliación:** el fragmento de código inspeccionado en esta extracción (línea 242) fija `num_clusters = 3`. Sin embargo, la salida verificada más reciente (`municipios_semilla.csv`) contiene **cuatro** clústeres (354, 207, 287 y 273 municipios respectivamente), consistentes con los perfiles del Reporte Final institucional. Esto indica que el notebook fue actualizado a `num_clusters = 4` en algún punto posterior a esta inspección de código — el fragmento de línea 242 citado aquí corresponde a una versión anterior y debe reconfirmarse contra el notebook vigente.
-
-```python
-# Línea 242 (versión inspeccionada — pendiente de reconfirmar contra el notebook actual)
-num_clusters = 3
-```
-
 **Optimización de Hiperparámetros (Distancia y Enlace):**
 El script itera sobre varias métricas de distancia (`euclidean`, `cosine`, etc.) y métodos de enlace (`ward`, `complete`, etc.) para encontrar el clustering óptimo maximizando una métrica combinada `combined_score` (Línea 82), que penaliza mediante el Silhouette Score, una métrica de balance (desviación estándar de los tamaños) y una penalidad a clústeres minoritarios menores al 5%. La configuración final reportada usa enlace *weighted* y distancia *cosine*.
 
