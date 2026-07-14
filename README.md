@@ -68,7 +68,7 @@ El proyecto integra información proveniente de fuentes públicas y abiertas, en
 |---|---|---|
 | UPRA | Producción agrícola, cultivos, uso del suelo y aptitud productiva | Caracterización productiva y diversidad agrícola |
 | DANE | Población, ruralidad e inseguridad alimentaria | Medición de exposición social y vulnerabilidad alimentaria |
-| Ministerio de Salud / ICBF | Información de salud, nutrición y variables asociadas a riesgo social | Aproximación al impacto social y nutricional |
+| Ministerio de Salud | Información de salud, nutrición y variables asociadas a riesgo social | Aproximación al impacto social y nutricional |
 | IGAC | Capas geográficas y territoriales | Integración espacial y caracterización municipal |
 | OpenStreetMap | Red vial y conectividad terrestre | Construcción de indicadores de suficiencia vial |
 | Open-Meteo | Temperatura, precipitación y variables climáticas | Análisis de exposición climática |
@@ -163,7 +163,7 @@ El enfoque S2SLS permite incorporar rezagos temporales y espaciales para captura
 
 ### ST-GNN
 
-Las redes neuronales espacio-temporales tipo ST-GNN permiten detectar tendencias, no solo valores puntuales. Este enfoque puede anticipar hacia dónde se dirige una crisis de desnutrición o vulnerabilidad alimentaria, aprendiendo patrones entre municipios, clima, vegetación y variables sociales.
+Las redes neuronales espacio-temporales tipo ST-GNN permiten detectar tendencias, no solo valores puntuales. Este enfoque puede anticipar los patrones de vegetación entre municipio.
 
 ### Interpretabilidad
 
